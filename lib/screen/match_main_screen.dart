@@ -1,3 +1,4 @@
+import "package:chessy/screen/match_sub_screen/find_room_screen.dart";
 import "package:flutter/material.dart";
 import "package:chessy/screen/match_sub_screen/create_room_screen.dart";
 
@@ -53,7 +54,12 @@ class _MatchTabView extends State<MatchTabView> with TickerProviderStateMixin {
       Expanded(
           child: TabBarView(
               controller: tabController,
-              children: [CreateRoomScreen(), Text("find match")]))
+              children: [
+                CreateRoomScreen(), 
+                FindRoomScreen(),
+              ]
+          )
+        )
     ]);
   }
 }
