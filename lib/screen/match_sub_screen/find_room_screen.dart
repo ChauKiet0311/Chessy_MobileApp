@@ -2,9 +2,14 @@ import "package:chessy/components/create_room_button.dart";
 import "package:chessy/components/room_item.dart";
 import "package:flutter/material.dart";
 
-class FindRoomScreen extends StatelessWidget {
+class FindRoomScreen extends StatefulWidget {
   const FindRoomScreen({super.key});
 
+  @override
+  State<FindRoomScreen> createState() => _FindRoomScreen();
+}
+
+class _FindRoomScreen extends State<FindRoomScreen> {
   @override
   Widget build(BuildContext context) {
     return Center(
