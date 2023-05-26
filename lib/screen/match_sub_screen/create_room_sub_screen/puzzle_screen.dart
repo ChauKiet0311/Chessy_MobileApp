@@ -1,7 +1,12 @@
+import "dart:convert";
+import "dart:math";
+
 import "package:chessy/components/create_room_button.dart";
 import "package:chessy/components/rounded_button.dart";
+import "package:chessy/models/puzzleInfo.dart";
 import "package:flutter/material.dart";
 import "package:chessy/components/puzzle_room_card.dart";
+import 'package:http/http.dart' as http;
 
 class PuzzleScreen extends StatefulWidget {
   @override
@@ -10,7 +15,120 @@ class PuzzleScreen extends StatefulWidget {
   }
 }
 
-class _PuzzleScreen extends State<PuzzleScreen> {
+class _PuzzleScreen extends State<PuzzleScreen>
+    with AutomaticKeepAliveClientMixin<PuzzleScreen> {
+  List<PuzzleInfo> puzzleList_easy = [];
+  List<PuzzleInfo> puzzleList_medium = [];
+  List<PuzzleInfo> puzzleList_hard = [];
+
+  static const int EASY_NUM_TABLE = 1100;
+  static const int MEDIUM_NUM_TABLE = 1010;
+  static const int HARD_NUM_TABLE = 1300;
+  int current_mili_seconds = DateTime.now().millisecondsSinceEpoch;
+
+  String currentMode = "";
+
+  PuzzleCard currentCard = new PuzzleCard(
+      PuzzleInfo(
+          id: "-1",
+          FEN: "-1",
+          Moves: "-1",
+          Popularity: -1,
+          PuzzleId: "Unknown",
+          rating: 0),
+      "Unknow");
+
+  @override
+  bool get wantKeepAlive => true;
+
+  int randomNumber(int range) {
+    int result = 0;
+    current_mili_seconds = DateTime.now().millisecondsSinceEpoch;
+    Random random = new Random(current_mili_seconds);
+    result = random.nextInt(range);
+    return result;
+  }
+
+  String randomTable(String mode) {
+    String result = "";
+    if (mode == "Easy") {
+      int validRandomNumber = randomNumber(EASY_NUM_TABLE);
+      result = "easy" + validRandomNumber.toString();
+    } else if (mode == "Medium") {
+      int validRandomNumber = randomNumber(MEDIUM_NUM_TABLE);
+      result = "medium" + validRandomNumber.toString();
+    } else if (mode == "Hard") {
+      int validRandomNumber = randomNumber(HARD_NUM_TABLE);
+      result = "hard" + validRandomNumber.toString();
+    }
+
+    return result;
+  }
+
+  Future<List<PuzzleInfo>> _loadPuzzles(String mode) async {
+    List<PuzzleInfo> puzzleList = [];
+    String json_file = randomTable(mode) + ".json";
+    final url = Uri.https(
+        'chessypuzzle-default-rtdb.asia-southeast1.firebasedatabase.app',
+        json_file);
+    final response = await http.get(url);
+    final Map<String, dynamic> listData = json.decode(response.body);
+    for (final item in listData.entries) {
+      puzzleList.add(new PuzzleInfo(
+          PuzzleId: item.value['PuzzleId'],
+          FEN: item.value['FEN'],
+          Moves: item.value["Moves"],
+          Popularity: item.value['Popularity'],
+          rating: item.value["Rating"]));
+    }
+
+    return puzzleList;
+  }
+
+  void loadPuzzleState() async {
+    if (puzzleList_easy.isEmpty) {
+      puzzleList_easy = await _loadPuzzles("Easy");
+      print("Easy here");
+    }
+
+    if (puzzleList_medium.isEmpty) {
+      puzzleList_medium = await _loadPuzzles("Medium");
+      print("Medium here");
+    }
+
+    if (puzzleList_hard.isEmpty) {
+      puzzleList_hard = await _loadPuzzles("Hard");
+      print("Hard here");
+    }
+  }
+
+  void chooseMode(String mode) {
+    PuzzleInfo newPuzzleInfo = PuzzleInfo();
+    int randomNumber = 0;
+    current_mili_seconds = DateTime.now().millisecondsSinceEpoch;
+    Random random = new Random(current_mili_seconds);
+    if (mode == "Easy") {
+      randomNumber = random.nextInt(puzzleList_easy.length);
+      newPuzzleInfo = puzzleList_easy.elementAt(randomNumber);
+    } else if (mode == "Medium") {
+      randomNumber = random.nextInt(puzzleList_medium.length);
+      newPuzzleInfo = puzzleList_medium.elementAt(randomNumber);
+    } else if (mode == "Hard") {
+      randomNumber = random.nextInt(puzzleList_hard.length);
+      newPuzzleInfo = puzzleList_hard.elementAt(randomNumber);
+    }
+    setState(() {
+      currentCard = new PuzzleCard(newPuzzleInfo, mode);
+      currentMode = mode;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadPuzzleState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,18 +177,26 @@ class _PuzzleScreen extends State<PuzzleScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        RoundedButton("Easy", () {}),
-                        RoundedButton("Medium", () {}),
-                        RoundedButton("Hard", () {})
+                        RoundedButton("Easy", () {
+                          chooseMode("Easy");
+                        }),
+                        RoundedButton("Medium", () {
+                          chooseMode("Medium");
+                        }),
+                        RoundedButton("Hard", () {
+                          chooseMode("Hard");
+                        })
                       ],
                     )),
-                Padding(padding: EdgeInsets.all(10), child: PuzzleCard()),
+                Padding(padding: EdgeInsets.all(10), child: currentCard),
                 Padding(
                     padding: EdgeInsets.all(10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        RoundedButton("Change", () {}),
+                        RoundedButton("Change", () {
+                          chooseMode(currentMode);
+                        }),
                         RoundedButton("Play", () {})
                       ],
                     ))

@@ -1,6 +1,12 @@
+import "package:chessy/models/puzzleInfo.dart";
 import "package:flutter/material.dart";
 
 class PuzzleCard extends StatelessWidget {
+  PuzzleInfo currentInfo;
+  String mode;
+
+  PuzzleCard(this.currentInfo, this.mode);
+
   @override
   Widget build(BuildContext context) {
     //Cái này dùng để tính toán kích thước để responsive
@@ -39,7 +45,7 @@ class PuzzleCard extends StatelessWidget {
                       height: SIZED_BOXED_HEIGHT,
                     ),
                     Text(
-                      "Puzzle Name: ABC",
+                      "Puzzle Name: " + currentInfo.PuzzleId,
                       style: TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w700,
@@ -47,7 +53,7 @@ class PuzzleCard extends StatelessWidget {
                           color: Colors.white),
                     ),
                     Text(
-                      "#ROOM ID",
+                      "Poppularity: " + currentInfo.Popularity.toString(),
                       style: TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w700,
@@ -55,7 +61,15 @@ class PuzzleCard extends StatelessWidget {
                           color: Colors.white),
                     ),
                     Text(
-                      "Difficulty",
+                      "Difficulty: " + mode,
+                      style: TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                          color: Colors.white),
+                    ),
+                    Text(
+                      "Rating: " + currentInfo.rating.toString(),
                       style: TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w700,

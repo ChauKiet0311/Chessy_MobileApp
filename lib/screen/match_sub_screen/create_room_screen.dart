@@ -1,12 +1,12 @@
 import "package:chessy/components/create_room_button.dart";
+import "package:chessy/models/puzzleInfo.dart";
 import "package:chessy/screen/match_sub_screen/create_room_sub_screen/puzzle_screen.dart";
 import "package:flutter/material.dart";
 import 'package:material_dialogs/material_dialogs.dart';
 import "package:material_dialogs/widgets/buttons/icon_outline_button.dart";
 
 class CreateRoomScreen extends StatelessWidget {
-  const CreateRoomScreen({super.key});
-
+  CreateRoomScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -37,6 +37,8 @@ class CreateRoomScreen extends StatelessWidget {
                                 actions: [
                                   IconsOutlineButton(
                                     onPressed: () {
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop(context);
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(

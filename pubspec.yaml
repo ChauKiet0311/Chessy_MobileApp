@@ -39,6 +39,7 @@ dependencies:
   flutter_svg: ^0.17.4
   google_nav_bar: ^5.0.6
   material_dialogs: ^1.1.4
+  http: ^0.13.6
   
 
 
