@@ -6,6 +6,8 @@ import "package:chessy/components/rounded_button.dart";
 import "package:chessy/models/puzzleInfo.dart";
 import "package:flutter/material.dart";
 import "package:chessy/components/puzzle_room_card.dart";
+import 'package:material_dialogs/material_dialogs.dart';
+import "package:material_dialogs/widgets/buttons/icon_outline_button.dart";
 import 'package:http/http.dart' as http;
 
 class PuzzleScreen extends StatefulWidget {
@@ -27,8 +29,27 @@ class _PuzzleScreen extends State<PuzzleScreen>
   int current_mili_seconds = DateTime.now().millisecondsSinceEpoch;
 
   String currentMode = "";
+  PuzzleInfo? currentPuzzleInfo = null;
 
-  PuzzleCard currentCard = new PuzzleCard(
+  void annouceHaventChooseDialog() {
+    Dialogs.materialDialog(
+        context: context,
+        msg: "You haven't choose any game to play!",
+        title: "Alert!!!",
+        actions: [
+          IconsOutlineButton(
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pop(context);
+            },
+            text: 'Cancel',
+            iconData: Icons.cancel_outlined,
+            textStyle: const TextStyle(color: Colors.grey),
+            iconColor: Colors.grey,
+          )
+        ]);
+  }
+
+  PuzzleCard currentCard = PuzzleCard(
       PuzzleInfo(
           id: "-1",
           FEN: "-1",
@@ -44,7 +65,7 @@ class _PuzzleScreen extends State<PuzzleScreen>
   int randomNumber(int range) {
     int result = 0;
     current_mili_seconds = DateTime.now().millisecondsSinceEpoch;
-    Random random = new Random(current_mili_seconds);
+    Random random = Random(current_mili_seconds);
     result = random.nextInt(range);
     return result;
   }
@@ -74,7 +95,7 @@ class _PuzzleScreen extends State<PuzzleScreen>
     final response = await http.get(url);
     final Map<String, dynamic> listData = json.decode(response.body);
     for (final item in listData.entries) {
-      puzzleList.add(new PuzzleInfo(
+      puzzleList.add(PuzzleInfo(
           PuzzleId: item.value['PuzzleId'],
           FEN: item.value['FEN'],
           Moves: item.value["Moves"],
@@ -88,17 +109,17 @@ class _PuzzleScreen extends State<PuzzleScreen>
   void loadPuzzleState() async {
     if (puzzleList_easy.isEmpty) {
       puzzleList_easy = await _loadPuzzles("Easy");
-      print("Easy here");
+      //print("Easy here");
     }
 
     if (puzzleList_medium.isEmpty) {
       puzzleList_medium = await _loadPuzzles("Medium");
-      print("Medium here");
+      //print("Medium here");
     }
 
     if (puzzleList_hard.isEmpty) {
       puzzleList_hard = await _loadPuzzles("Hard");
-      print("Hard here");
+      //print("Hard here");
     }
   }
 
@@ -120,7 +141,34 @@ class _PuzzleScreen extends State<PuzzleScreen>
     setState(() {
       currentCard = new PuzzleCard(newPuzzleInfo, mode);
       currentMode = mode;
+      currentPuzzleInfo = newPuzzleInfo;
     });
+  }
+
+  void playGame() {
+    Dialogs.materialDialog(
+      context: context,
+      msg: "Are you sure you want to play?",
+      title: "Alert!!!",
+      actions: [
+        IconsOutlineButton(
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pop(context);
+          },
+          text: 'No',
+          iconData: Icons.cancel_outlined,
+          textStyle: TextStyle(color: Colors.grey),
+          iconColor: Colors.grey,
+        ),
+        IconsOutlineButton(
+          onPressed: () {},
+          text: 'Yes',
+          iconData: Icons.cancel_outlined,
+          textStyle: TextStyle(color: Colors.grey),
+          iconColor: Colors.grey,
+        )
+      ],
+    );
   }
 
   @override
@@ -197,7 +245,13 @@ class _PuzzleScreen extends State<PuzzleScreen>
                         RoundedButton("Change", () {
                           chooseMode(currentMode);
                         }),
-                        RoundedButton("Play", () {})
+                        RoundedButton("Play", () {
+                          if (currentPuzzleInfo == null) {
+                            annouceHaventChooseDialog();
+                          } else {
+                            playGame();
+                          }
+                        })
                       ],
                     ))
               ]),
