@@ -4,6 +4,7 @@ import "dart:math";
 import "package:chessy/components/create_room_button.dart";
 import "package:chessy/components/rounded_button.dart";
 import "package:chessy/models/puzzleInfo.dart";
+import "package:chessy/screen/game_screen/puzzle_game_screen.dart";
 import "package:flutter/material.dart";
 import "package:chessy/components/puzzle_room_card.dart";
 import 'package:material_dialogs/material_dialogs.dart';
@@ -29,7 +30,7 @@ class _PuzzleScreen extends State<PuzzleScreen>
   int current_mili_seconds = DateTime.now().millisecondsSinceEpoch;
 
   String currentMode = "";
-  PuzzleInfo? currentPuzzleInfo = null;
+  PuzzleInfo currentPuzzleInfo = PuzzleInfo();
 
   void annouceHaventChooseDialog() {
     Dialogs.materialDialog(
@@ -161,7 +162,14 @@ class _PuzzleScreen extends State<PuzzleScreen>
           iconColor: Colors.grey,
         ),
         IconsOutlineButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PuzzleGameRoom(
+                          currentPuzzle: currentPuzzleInfo,
+                        )));
+          },
           text: 'Yes',
           iconData: Icons.cancel_outlined,
           textStyle: TextStyle(color: Colors.grey),
