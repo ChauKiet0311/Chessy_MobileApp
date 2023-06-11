@@ -27,12 +27,24 @@ class CreateRoomScreen extends StatelessWidget {
                               builder: (context) => CreateNormalRoomScreen(
                                   mode: "Normal Match")));
                     }),
-                    CreateRoomButton("Blitz Match", () {})
+                    CreateRoomButton("Blitz Match", () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  CreateNormalRoomScreen(mode: "Blitz Match")));
+                    })
                   ],
                 ),
                 Row(
                   children: [
-                    CreateRoomButton("Blitz 10", () {}),
+                    CreateRoomButton("Blitz 10", () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  CreateNormalRoomScreen(mode: "Blitz 10")));
+                    }),
                     CreateRoomButton(
                         "Puzzle",
                         () => Dialogs.materialDialog(
