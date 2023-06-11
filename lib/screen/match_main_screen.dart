@@ -3,6 +3,8 @@ import "package:flutter/material.dart";
 import "package:chessy/screen/match_sub_screen/create_room_screen.dart";
 
 class MatchTabView extends StatefulWidget {
+  const MatchTabView({super.key});
+
   @override
   State<MatchTabView> createState() {
     return _MatchTabView();
@@ -14,10 +16,10 @@ class _MatchTabView extends State<MatchTabView> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     TabController tabController = TabController(length: 2, vsync: this);
     return Column(children: [
-      SizedBox(
+      const SizedBox(
         height: 50,
       ),
-      Text(
+      const Text(
         "MATCH",
         style: TextStyle(
             fontFamily: 'Montserrat',
@@ -25,14 +27,14 @@ class _MatchTabView extends State<MatchTabView> with TickerProviderStateMixin {
             fontSize: 24,
             color: Colors.white),
       ),
-      SizedBox(height: 5),
+      const SizedBox(height: 5),
       Card(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
           elevation: 5,
           child: Container(
             decoration: BoxDecoration(
-                color: Color.fromARGB(200, 220, 197, 212),
+                color: const Color.fromARGB(200, 220, 197, 212),
                 borderRadius: BorderRadius.circular(17)),
             child: TabBar(
               indicator: BoxDecoration(
@@ -40,8 +42,8 @@ class _MatchTabView extends State<MatchTabView> with TickerProviderStateMixin {
                   borderRadius: BorderRadius.circular(17)),
               controller: tabController,
               isScrollable: true,
-              labelPadding: EdgeInsets.symmetric(horizontal: 20),
-              tabs: [
+              labelPadding: const EdgeInsets.symmetric(horizontal: 20),
+              tabs: const [
                 Tab(child: Text("Create room", style: TextStyle(fontSize: 12))),
                 Tab(
                     child: Text(
@@ -52,14 +54,10 @@ class _MatchTabView extends State<MatchTabView> with TickerProviderStateMixin {
             ),
           )),
       Expanded(
-          child: TabBarView(
-              controller: tabController,
-              children: [
-                CreateRoomScreen(), 
-                FindRoomScreen(),
-              ]
-          )
-        )
+          child: TabBarView(controller: tabController, children: const [
+        CreateRoomScreen(),
+        FindRoomScreen(),
+      ]))
     ]);
   }
 }

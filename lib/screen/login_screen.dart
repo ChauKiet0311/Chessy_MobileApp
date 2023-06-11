@@ -1,8 +1,5 @@
-import 'dart:math';
-
 import 'package:chessy/components/input_textfield.dart';
 import 'package:chessy/components/rounded_button.dart';
-import 'package:chessy/components/rounded_textfield.dart';
 import 'package:chessy/screen/main_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -49,9 +46,9 @@ class _LoginScreen extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   "SIGN IN",
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.w700,
                       fontSize: 32,

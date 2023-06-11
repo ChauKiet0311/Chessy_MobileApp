@@ -70,8 +70,8 @@ class _LearningTabView extends State<LearningTabView> {
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(),
-                  SizedBox(
+                  const CircularProgressIndicator(),
+                  const SizedBox(
                     height: 20,
                   )
                 ],
@@ -83,7 +83,7 @@ class _LearningTabView extends State<LearningTabView> {
                           borderRadius: BorderRadius.circular(20)),
                       child: Container(
                         decoration: const BoxDecoration(
-                            color: const Color.fromARGB(255, 129, 31, 134),
+                            color: Color.fromARGB(255, 129, 31, 134),
                             borderRadius:
                                 BorderRadius.all(Radius.circular(20))),
                         margin: const EdgeInsets.all(15),

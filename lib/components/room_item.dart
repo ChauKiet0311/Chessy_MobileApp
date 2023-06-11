@@ -39,13 +39,13 @@ class RoomItem extends StatelessWidget {
                     width: 50,
                   ),
                   Text(player,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w700,
                           fontSize: 12,
                           color: Color.fromARGB(255, 233, 226, 234)))
                 ]),
-                SizedBox(
+                const SizedBox(
                   width: 30,
                 ),
                 Column(
@@ -54,28 +54,28 @@ class RoomItem extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Room name: ${roomName}',
-                      style: TextStyle(
+                      'Room name: $roomName',
+                      style: const TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w700,
                           fontSize: 15,
                           color: Color.fromARGB(255, 233, 226, 234)),
                       maxLines: 1,
                     ),
-                    SizedBox(height: 7),
+                    const SizedBox(height: 7),
                     Text(
-                      '#${number}',
-                      style: TextStyle(
+                      '#$number',
+                      style: const TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w700,
                           fontSize: 15,
                           color: Color.fromARGB(255, 233, 226, 234)),
                       maxLines: 1,
                     ),
-                    SizedBox(height: 7),
+                    const SizedBox(height: 7),
                     Text(
-                      'Mode: ${number}',
-                      style: TextStyle(
+                      'Mode: $number',
+                      style: const TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w700,
                           fontSize: 15,

@@ -1,6 +1,7 @@
 import "package:chessy/components/create_room_button.dart";
 import "package:chessy/components/input_textfield.dart";
 import "package:chessy/components/rounded_button.dart";
+import "package:chessy/screen/match_sub_screen/create_room_sub_screen/waiting_room.dart";
 import "package:flutter/material.dart";
 
 class CreateNormalRoomScreen extends StatefulWidget {
@@ -33,6 +34,15 @@ class _CreateNormalRoomScreen extends State<CreateNormalRoomScreen> {
     );
   }
 
+  bool isFieldFull() {
+    if (roomNameTextController.text == "" ||
+        timeStopTextController.text == "" ||
+        secondsPerMoveTextController.text == "") {
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,14 +66,6 @@ class _CreateNormalRoomScreen extends State<CreateNormalRoomScreen> {
                     color: Colors.white),
               ),
               const SizedBox(height: 10),
-              const Text(
-                "Room ID: #12345",
-                style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
-                    color: Colors.white),
-              ),
               CreateRoomButton(mode, () {}),
               InputTextField("RoomName", roomNameTextController),
               InputTextField("Seconds per move", secondsPerMoveTextController),
@@ -74,7 +76,19 @@ class _CreateNormalRoomScreen extends State<CreateNormalRoomScreen> {
                   RoundedButton("Back", () {
                     Navigator.of(context, rootNavigator: true).pop(context);
                   }),
-                  RoundedButton("Confirm", () {})
+                  RoundedButton("Confirm", () {
+                    if (isFieldFull()) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => WaitingScreen(
+                                    roomName: roomNameTextController.text,
+                                    secondsPerMove:
+                                        secondsPerMoveTextController.text,
+                                    timeStop: timeStopTextController.text,
+                                  )));
+                    } else {}
+                  })
                 ],
               )
             ]))));

@@ -4,7 +4,7 @@ class CreateRoomButton extends StatelessWidget {
   final VoidCallback press;
   final String name;
 
-  CreateRoomButton(this.name, this.press, {super.key});
+  const CreateRoomButton(this.name, this.press, {super.key});
 
   String assetsName() {
     if (name == "Normal Match") {

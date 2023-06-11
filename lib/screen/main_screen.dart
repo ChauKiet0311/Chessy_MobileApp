@@ -17,20 +17,22 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreen extends State<MainScreen> {
   int currentViewIndex = 0;
+
+  static List<Widget> _viewOptions = <Widget>[
+    LearningTabView(),
+    MatchTabView(),
+    SettingTabView()
+  ];
+
   @override
   Widget build(BuildContext context) {
-    List<Widget> _viewOptions = <Widget>[
-      LearningTabView(),
-      MatchTabView(),
-      SettingTabView()
-    ];
     return Scaffold(
-      appBar: AppBar(title: Text("Chessy")),
+      appBar: AppBar(title: const Text("Chessy")),
       body: Container(
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-              image: const DecorationImage(
-                  image: const AssetImage(
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage(
                       'image/167.jpg'), //File ảnh background là image/167.jpg
                   fit: BoxFit.cover)),
           child: _viewOptions.elementAt(currentViewIndex)),
@@ -42,9 +44,9 @@ class _MainScreen extends State<MainScreen> {
           backgroundColor: const Color.fromARGB(255, 129, 31, 134),
           color: Colors.white,
           activeColor: Colors.white,
-          tabBackgroundColor: Color.fromARGB(255, 227, 151, 231),
+          tabBackgroundColor: const Color.fromARGB(255, 227, 151, 231),
           gap: 8,
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           tabs: const [
             GButton(icon: NavigationBarIcon.learning, text: 'Learning'),
             GButton(icon: NavigationBarIcon.matching, text: 'Matching'),

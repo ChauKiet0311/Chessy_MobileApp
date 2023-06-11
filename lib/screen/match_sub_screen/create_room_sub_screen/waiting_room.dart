@@ -1,24 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:chessy/components/waiting_player_item.dart';
+import 'package:chessy/components/rounded_button.dart';
 
 class WaitingScreen extends StatefulWidget {
-  WaitingScreen({super.key});
+  const WaitingScreen(
+      {super.key,
+      required this.roomName,
+      required this.secondsPerMove,
+      required this.timeStop});
 
+  final String roomName;
+  final String secondsPerMove;
+  final String timeStop;
   @override
   State<StatefulWidget> createState() {
-    return _WaitingScreen();
+    return _WaitingScreen(roomName, secondsPerMove, timeStop);
   }
 }
 
 class _WaitingScreen extends State<WaitingScreen> {
-  _WaitingScreen() {}
+  _WaitingScreen(this.roomname, this.secondsPerMove, this.timeStop) {}
 
+  String roomname;
+  String secondsPerMove;
+  String timeStop;
   Text customText(String name) {
     return Text(
       name,
       style: TextStyle(
           fontFamily: 'Montserrat',
           fontWeight: FontWeight.w700,
-          fontSize: 12,
+          fontSize: 15,
           color: Colors.white),
     );
   }
@@ -35,6 +47,7 @@ class _WaitingScreen extends State<WaitingScreen> {
                     fit: BoxFit.cover)),
             child: Center(
                 child: Column(children: [
+              const SizedBox(height: 20),
               Text(
                 "WAITING ROOM",
                 style: TextStyle(
@@ -44,14 +57,60 @@ class _WaitingScreen extends State<WaitingScreen> {
                     color: Colors.white),
               ),
               SizedBox(height: 10),
-              Text(
-                "Room ID: #12345",
-                style: TextStyle(
-                    fontFamily: 'Montserrat',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
-                    color: Colors.white),
+              customText("Room id #12345"),
+              customText("Room name: $roomname"),
+              customText("Seconds per move: $secondsPerMove"),
+              customText("Time allow to stop: $timeStop"),
+              const SizedBox(
+                height: 10,
               ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 0, 5),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Your profile",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                        color: Colors.white),
+                  ),
+                ),
+              ),
+              WaitingPlayerCard(
+                profile: "YourProfile",
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 20, 5),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    "Your opponent",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 15,
+                        color: Colors.white),
+                  ),
+                ),
+              ),
+              WaitingPlayerCard(profile: "OpponentProfile"),
+              const SizedBox(
+                height: 35,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  RoundedButton("Ready", () {}),
+                  RoundedButton("Play", () {})
+                ],
+              )
             ]))));
   }
 }

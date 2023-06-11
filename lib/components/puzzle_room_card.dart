@@ -5,7 +5,7 @@ class PuzzleCard extends StatelessWidget {
   final PuzzleInfo currentInfo;
   final String mode;
 
-  PuzzleCard(this.currentInfo, this.mode);
+  const PuzzleCard(this.currentInfo, this.mode);
 
   @override
   Widget build(BuildContext context) {
@@ -45,23 +45,7 @@ class PuzzleCard extends StatelessWidget {
                       height: SIZED_BOXED_HEIGHT,
                     ),
                     Text(
-                      "Puzzle Name: " + currentInfo.PuzzleId,
-                      style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 15,
-                          color: Colors.white),
-                    ),
-                    Text(
-                      "Poppularity: " + currentInfo.Popularity.toString(),
-                      style: TextStyle(
-                          fontFamily: 'Montserrat',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 15,
-                          color: Colors.white),
-                    ),
-                    Text(
-                      "Difficulty: " + mode,
+                      "Puzzle Name: ${currentInfo.PuzzleId}",
                       style: const TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w700,
@@ -69,7 +53,23 @@ class PuzzleCard extends StatelessWidget {
                           color: Colors.white),
                     ),
                     Text(
-                      "Rating: " + currentInfo.rating.toString(),
+                      "Poppularity: ${currentInfo.Popularity}",
+                      style: const TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                          color: Colors.white),
+                    ),
+                    Text(
+                      "Difficulty: $mode",
+                      style: const TextStyle(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                          color: Colors.white),
+                    ),
+                    Text(
+                      "Rating: ${currentInfo.rating}",
                       style: const TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w700,
