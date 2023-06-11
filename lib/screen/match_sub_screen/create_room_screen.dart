@@ -1,5 +1,6 @@
 import "package:chessy/components/create_room_button.dart";
 import "package:chessy/models/puzzleInfo.dart";
+import "package:chessy/screen/match_sub_screen/create_room_sub_screen/create_room_normal_room.dart";
 import "package:chessy/screen/match_sub_screen/create_room_sub_screen/puzzle_screen.dart";
 import "package:flutter/material.dart";
 import 'package:material_dialogs/material_dialogs.dart';
@@ -20,7 +21,11 @@ class CreateRoomScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CreateRoomButton("Normal Match", () {
-                      print("Normal Matched");
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CreateNormalRoomScreen(
+                                  mode: "Normal Match")));
                     }),
                     CreateRoomButton("Blitz Match", () {})
                   ],

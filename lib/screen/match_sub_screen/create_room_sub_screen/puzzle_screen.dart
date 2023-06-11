@@ -199,7 +199,7 @@ class _PuzzleScreen extends State<PuzzleScreen>
               child: Column(children: [
                 SizedBox(height: 20),
                 Text(
-                  "MATCH",
+                  "Choose Game",
                   style: TextStyle(
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.w700,
