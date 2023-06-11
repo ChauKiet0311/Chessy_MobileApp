@@ -24,14 +24,14 @@ class CreateRoomButton extends StatelessWidget {
     return Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         elevation: 5,
-        child: new InkWell(
+        child: InkWell(
             onTap: press,
             child: Container(
               padding: const EdgeInsets.all(30),
               width: 170,
               height: 170,
               decoration: const BoxDecoration(
-                  color: const Color.fromARGB(255, 249, 216, 244),
+                  color: Color.fromARGB(255, 249, 216, 244),
                   borderRadius: BorderRadius.all(Radius.circular(20))),
               child: Column(children: [
                 Image.asset(
@@ -41,7 +41,7 @@ class CreateRoomButton extends StatelessWidget {
                   width: 80,
                 ),
                 Text(name,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontFamily: 'Montserrat',
                         fontWeight: FontWeight.w700,
                         fontSize: 14,

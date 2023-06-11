@@ -4,7 +4,7 @@ import 'package:chessy/components/rounded_button_bold_for_dialog.dart';
 class LogoutDialog extends StatelessWidget {
   final Function() onLogout;
 
-  const LogoutDialog({required this.onLogout});
+  const LogoutDialog({super.key, required this.onLogout});
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +13,10 @@ class LogoutDialog extends StatelessWidget {
         borderRadius: BorderRadius.circular(20.0),
       ),
       backgroundColor: const Color(0xFFF9D8F4), // Thay đổi màu nền dialog
-      title: Text(
+      title: const Text(
         "Alert",
         style: TextStyle(
-          color: const Color(0xFF5A315C),
+          color: Color(0xFF5A315C),
           fontFamily: 'Montserrat',
           fontSize: 32,
           fontWeight: FontWeight.w700,
@@ -24,11 +24,11 @@ class LogoutDialog extends StatelessWidget {
         textAlign: TextAlign.center,
       ),
       content: Container(
-        padding: EdgeInsets.all(20.0),
-        child: Text(
+        padding: const EdgeInsets.all(20.0),
+        child: const Text(
           "You are about to log out, are you sure you want to log out?",
           style: TextStyle(
-            color: const Color(0xFF5A315C),
+            color: Color(0xFF5A315C),
             fontFamily: 'Montserrat',
             fontSize: 16,
           ),
@@ -60,8 +60,9 @@ class LogoutDialog extends StatelessWidget {
           ],
         ),
       ],
-      contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-      contentTextStyle: TextStyle(
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      contentTextStyle: const TextStyle(
         fontSize: 16,
       ),
     );

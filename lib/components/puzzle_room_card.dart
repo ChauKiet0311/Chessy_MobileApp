@@ -2,8 +2,8 @@ import "package:chessy/models/puzzleInfo.dart";
 import "package:flutter/material.dart";
 
 class PuzzleCard extends StatelessWidget {
-  PuzzleInfo currentInfo;
-  String mode;
+  final PuzzleInfo currentInfo;
+  final String mode;
 
   PuzzleCard(this.currentInfo, this.mode);
 
@@ -25,18 +25,18 @@ class PuzzleCard extends StatelessWidget {
               CARD_WIDTH_RATIO, //Logic tính toán kích thước ở đây
           height: screen_height * CARD_HEIGHT_RATIO,
           decoration: const BoxDecoration(
-              color: const Color.fromARGB(255, 129, 31, 134),
+              color: Color.fromARGB(255, 129, 31, 134),
               borderRadius: BorderRadius.all(Radius.circular(15))),
           child: Row(children: [
             Image.asset(
               "image/puzzle_icon.png", // this one could go random
               color: Colors.white,
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             Padding(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,7 +62,7 @@ class PuzzleCard extends StatelessWidget {
                     ),
                     Text(
                       "Difficulty: " + mode,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w700,
                           fontSize: 15,
@@ -70,7 +70,7 @@ class PuzzleCard extends StatelessWidget {
                     ),
                     Text(
                       "Rating: " + currentInfo.rating.toString(),
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontFamily: 'Montserrat',
                           fontWeight: FontWeight.w700,
                           fontSize: 15,

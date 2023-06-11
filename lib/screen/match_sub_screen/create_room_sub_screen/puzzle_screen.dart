@@ -158,7 +158,7 @@ class _PuzzleScreen extends State<PuzzleScreen>
           },
           text: 'No',
           iconData: Icons.cancel_outlined,
-          textStyle: TextStyle(color: Colors.grey),
+          textStyle: const TextStyle(color: Colors.grey),
           iconColor: Colors.grey,
         ),
         IconsOutlineButton(
@@ -172,7 +172,7 @@ class _PuzzleScreen extends State<PuzzleScreen>
           },
           text: 'Yes',
           iconData: Icons.cancel_outlined,
-          textStyle: TextStyle(color: Colors.grey),
+          textStyle: const TextStyle(color: Colors.grey),
           iconColor: Colors.grey,
         )
       ],
@@ -197,8 +197,8 @@ class _PuzzleScreen extends State<PuzzleScreen>
                     fit: BoxFit.cover)),
             child: Center(
               child: Column(children: [
-                SizedBox(height: 20),
-                Text(
+                const SizedBox(height: 20),
+                const Text(
                   "Choose Game",
                   style: TextStyle(
                       fontFamily: 'Montserrat',
@@ -206,8 +206,8 @@ class _PuzzleScreen extends State<PuzzleScreen>
                       fontSize: 24,
                       color: Colors.white),
                 ),
-                SizedBox(height: 10),
-                Text(
+                const SizedBox(height: 10),
+                const Text(
                   "Room ID: #12345",
                   style: TextStyle(
                       fontFamily: 'Montserrat',
@@ -215,21 +215,21 @@ class _PuzzleScreen extends State<PuzzleScreen>
                       fontSize: 15,
                       color: Colors.white),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 CreateRoomButton("Puzzle", () {}),
                 SizedBox(
                   height: 10,
                 ),
-                Text(
+                const Text(
                   "Puzzle Difficulty",
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.w700,
                       fontSize: 12,
                       color: Colors.white),
                 ),
                 Padding(
-                    padding: EdgeInsets.fromLTRB(15, 10, 15, 0),
+                    padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -244,9 +244,9 @@ class _PuzzleScreen extends State<PuzzleScreen>
                         })
                       ],
                     )),
-                Padding(padding: EdgeInsets.all(10), child: currentCard),
+                Padding(padding: const EdgeInsets.all(10), child: currentCard),
                 Padding(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [

@@ -4,13 +4,12 @@ import "package:chessy/components/rounded_button.dart";
 import "package:flutter/material.dart";
 
 class CreateNormalRoomScreen extends StatefulWidget {
-  String mode;
+  final String mode;
 
-  CreateNormalRoomScreen({super.key, required this.mode});
+  const CreateNormalRoomScreen({super.key, required this.mode});
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _CreateNormalRoomScreen(mode);
   }
 }
@@ -26,7 +25,7 @@ class _CreateNormalRoomScreen extends State<CreateNormalRoomScreen> {
   Text customText(String name) {
     return Text(
       name,
-      style: TextStyle(
+      style: const TextStyle(
           fontFamily: 'Montserrat',
           fontWeight: FontWeight.w700,
           fontSize: 12,
@@ -37,6 +36,7 @@ class _CreateNormalRoomScreen extends State<CreateNormalRoomScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(title: const Text("Chessy")),
         body: Container(
             alignment: Alignment.centerLeft,
@@ -46,8 +46,8 @@ class _CreateNormalRoomScreen extends State<CreateNormalRoomScreen> {
                     fit: BoxFit.cover)),
             child: Center(
                 child: Column(children: [
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 "MATCH CONFIG",
                 style: TextStyle(
                     fontFamily: 'Montserrat',
@@ -55,8 +55,8 @@ class _CreateNormalRoomScreen extends State<CreateNormalRoomScreen> {
                     fontSize: 24,
                     color: Colors.white),
               ),
-              SizedBox(height: 10),
-              Text(
+              const SizedBox(height: 10),
+              const Text(
                 "Room ID: #12345",
                 style: TextStyle(
                     fontFamily: 'Montserrat',

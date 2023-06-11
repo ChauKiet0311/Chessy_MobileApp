@@ -7,7 +7,7 @@ import 'package:material_dialogs/material_dialogs.dart';
 import "package:material_dialogs/widgets/buttons/icon_outline_button.dart";
 
 class CreateRoomScreen extends StatelessWidget {
-  CreateRoomScreen({super.key});
+  const CreateRoomScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -24,15 +24,17 @@ class CreateRoomScreen extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => CreateNormalRoomScreen(
-                                  mode: "Normal Match")));
+                              builder: (context) =>
+                                  const CreateNormalRoomScreen(
+                                      mode: "Normal Match")));
                     }),
                     CreateRoomButton("Blitz Match", () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  CreateNormalRoomScreen(mode: "Blitz Match")));
+                                  const CreateNormalRoomScreen(
+                                      mode: "Blitz Match")));
                     })
                   ],
                 ),
@@ -43,7 +45,8 @@ class CreateRoomScreen extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  CreateNormalRoomScreen(mode: "Blitz 10")));
+                                  const CreateNormalRoomScreen(
+                                      mode: "Blitz 10")));
                     }),
                     CreateRoomButton(
                         "Puzzle",
