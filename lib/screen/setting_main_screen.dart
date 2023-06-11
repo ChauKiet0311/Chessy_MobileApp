@@ -11,7 +11,7 @@ class SettingTabView extends StatefulWidget {
 
 class _SettingTabView extends State<SettingTabView> {
   void _handleLogout() {
-    // TODO: Thực hiện đăng xuất ở đây
+    Navigator.of(context, rootNavigator: true).pop(context);
   }
 
   @override
