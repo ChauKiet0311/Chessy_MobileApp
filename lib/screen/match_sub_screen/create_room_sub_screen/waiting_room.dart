@@ -24,6 +24,9 @@ class _WaitingScreen extends State<WaitingScreen> {
   String roomname;
   String secondsPerMove;
   String timeStop;
+  String yourStatus = "UNREADY";
+  String OpponentStatus = "UNREADY";
+
   Text customText(String name) {
     return Text(
       name,
@@ -33,6 +36,26 @@ class _WaitingScreen extends State<WaitingScreen> {
           fontSize: 15,
           color: Colors.white),
     );
+  }
+
+  void setYouStatus() {
+    setState(() {
+      if (yourStatus == "UNREADY") {
+        yourStatus = "READY";
+      } else {
+        yourStatus = "UNREADY";
+      }
+    });
+  }
+
+  void setOppStatus() {
+    setState(() {
+      if (OpponentStatus == "UNREADY") {
+        OpponentStatus = "READY";
+      } else {
+        OpponentStatus = "UNREADY";
+      }
+    });
   }
 
   @override
@@ -68,7 +91,7 @@ class _WaitingScreen extends State<WaitingScreen> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 0, 5),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(
+                  child: const Text(
                     "Your profile",
                     textAlign: TextAlign.left,
                     style: TextStyle(
@@ -81,6 +104,7 @@ class _WaitingScreen extends State<WaitingScreen> {
               ),
               WaitingPlayerCard(
                 profile: "YourProfile",
+                status: yourStatus,
               ),
               const SizedBox(
                 height: 30,
@@ -100,14 +124,19 @@ class _WaitingScreen extends State<WaitingScreen> {
                   ),
                 ),
               ),
-              WaitingPlayerCard(profile: "OpponentProfile"),
+              WaitingPlayerCard(
+                profile: "OpponentProfile",
+                status: OpponentStatus,
+              ),
               const SizedBox(
                 height: 35,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  RoundedButton("Ready", () {}),
+                  RoundedButton("Ready", () {
+                    setYouStatus();
+                  }),
                   RoundedButton("Play", () {})
                 ],
               )

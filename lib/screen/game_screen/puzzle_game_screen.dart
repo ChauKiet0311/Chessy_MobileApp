@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import, avoid_print
+
 import 'dart:collection';
 
 import 'package:chessy/models/puzzleInfo.dart';
@@ -43,16 +45,6 @@ class _PuzzleGameRoom extends State<PuzzleGameRoom> {
     print(controller.getAscii());
     print("Cac buoc di: " + currentPuzzle.Moves);
     initStack();
-
-    // String fen1 = "r6r/pp2p1k1/2np1pp1/2p5/4PQ2/2P2N1q/P2N1PR1/R5K1 b - - 1 25";
-    // String fen2 = "r6r/pp2p1k1/2np1pp1/2p5/4PQ2/2P2N2/P2N1PR1/R5Kq w - - 2 26";
-
-    // String uci_ans = '';
-
-    // subController.loadFen(fen1);
-    // subController.makeMove(from: 'h3', to: 'h1');
-    // String currentFEN = subController.getFen();
-    // print(currentFEN);
   }
 
   @override

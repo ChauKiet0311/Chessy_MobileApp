@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 class WaitingPlayerCard extends StatefulWidget {
-  const WaitingPlayerCard({super.key, required this.profile});
+  const WaitingPlayerCard(
+      {super.key, required this.profile, required this.status});
 
+  final String status;
   final String profile;
   @override
   State<StatefulWidget> createState() {
@@ -13,7 +15,6 @@ class WaitingPlayerCard extends StatefulWidget {
 class _WaitingPlayerCard extends State<WaitingPlayerCard> {
   _WaitingPlayerCard(this.profile);
   String profile;
-  String status = "UNREADY";
 
   Text customText(String name) {
     return Text(
@@ -26,6 +27,8 @@ class _WaitingPlayerCard extends State<WaitingPlayerCard> {
       maxLines: 1,
     );
   }
+
+  void changeStatus() {}
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +75,7 @@ class _WaitingPlayerCard extends State<WaitingPlayerCard> {
               FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
-                  status,
+                  widget.status,
                   style: const TextStyle(
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.w700,
@@ -102,7 +105,7 @@ class _WaitingPlayerCard extends State<WaitingPlayerCard> {
               FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
-                  status,
+                  widget.status,
                   style: const TextStyle(
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.w700,
