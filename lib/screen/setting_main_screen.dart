@@ -1,6 +1,9 @@
+import 'package:chessy/screen/system_setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:chessy/components/rounded_button_bold.dart';
 import 'package:chessy/components/logout_dialog.dart';
+
+import 'history_screen.dart';
 
 class SettingTabView extends StatefulWidget {
   @override
@@ -43,7 +46,11 @@ class _SettingTabView extends State<SettingTabView> {
               width: MediaQuery.of(context).size.width * 0.5,
               child: RoundedButtonBold(
                 "History",
-                () {},
+                () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (ctx) => HistoryScreen(),
+                  ),);
+                },
               ),
             ),
             SizedBox(height: 10),
@@ -67,7 +74,11 @@ class _SettingTabView extends State<SettingTabView> {
               width: MediaQuery.of(context).size.width * 0.5,
               child: RoundedButtonBold(
                 "System Setting",
-                () {},
+                () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (ctx) => SystemSettingScreen(),
+                  ),);
+                },
               ),
             ),
             SizedBox(height: 10),

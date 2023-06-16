@@ -46,6 +46,7 @@ dependencies:
   chess: ^0.7.0
   stack: ^0.2.1
   quickalert: ^1.0.1
+  intl: ^0.17.0
 
 
 
