@@ -12,13 +12,13 @@ class RoomItemHistory extends StatelessWidget {
   final DateTime date;
 
   const RoomItemHistory({
-      super.key,
-      required this.mode,
-      required this.roomName,
-      required this.number,
-      required this.player, 
-      required this.result, 
-      required this.date,
+    super.key,
+    required this.mode,
+    required this.roomName,
+    required this.number,
+    required this.player,
+    required this.result,
+    required this.date,
   });
 
   String get formattedDate {
@@ -44,9 +44,9 @@ class RoomItemHistory extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Spacer(),
+                    const Spacer(),
                     Text(
-                      formattedDate, 
+                      formattedDate,
                       style: const TextStyle(
                         fontFamily: 'Montserrat',
                         fontWeight: FontWeight.w700,

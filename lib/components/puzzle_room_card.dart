@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names, non_constant_identifier_names
+
 import "package:chessy/models/puzzleInfo.dart";
 import "package:flutter/material.dart";
 
@@ -41,7 +43,7 @@ class PuzzleCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: SIZED_BOXED_HEIGHT,
                     ),
                     Text(

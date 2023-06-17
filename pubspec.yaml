@@ -47,6 +47,8 @@ dependencies:
   stack: ^0.2.1
   quickalert: ^1.0.1
   intl: ^0.17.0
+  
+
 
 
 
@@ -92,6 +94,7 @@ flutter:
     - image/blitz_icon.png
     - image/normal_match_icon.png
     - image/puzzle_icon.png
+    - image/puzzle_represent.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
