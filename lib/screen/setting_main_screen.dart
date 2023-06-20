@@ -1,8 +1,9 @@
-import 'package:chessy/screen/system_setting_screen.dart';
+import 'package:chessy/screen/system_setting/system_setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:chessy/components/rounded_button_bold.dart';
 import 'package:chessy/components/logout_dialog.dart';
-
+import 'change_password_screen.dart';
+import 'edit_screen.dart';
 import 'history_screen.dart';
 
 class SettingTabView extends StatefulWidget {
@@ -58,7 +59,11 @@ class _SettingTabView extends State<SettingTabView> {
               width: MediaQuery.of(context).size.width * 0.5,
               child: RoundedButtonBold(
                 "Edit Profile",
-                () {},
+                () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (ctx) => EditScreen(),
+                  ),);
+                },
               ),
             ),
             SizedBox(height: 10),
@@ -66,7 +71,11 @@ class _SettingTabView extends State<SettingTabView> {
               width: MediaQuery.of(context).size.width * 0.5,
               child: RoundedButtonBold(
                 "Change Password",
-                () {},
+                () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (ctx) => ChangePasswordScreen(),
+                  ),);
+                },
               ),
             ),
             SizedBox(height: 10),

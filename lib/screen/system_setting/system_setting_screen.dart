@@ -1,5 +1,7 @@
+import 'package:chessy/screen/system_setting/about_us_screen.dart';
+import 'package:chessy/screen/system_setting/tutorial_screen.dart';
 import "package:flutter/material.dart";
-import "../components/rounded_button_bold.dart";
+import '../../components/rounded_button_bold.dart';
 
 class SystemSettingScreen extends StatefulWidget {
   const SystemSettingScreen({super.key});
@@ -109,24 +111,34 @@ class _SystemSettingScreen extends State<SystemSettingScreen> {
                                 ]),
                           ))),
                       const SizedBox(height: 40),
+
                       SizedBox(
                         height: 60,
                         width: MediaQuery.of(context).size.width * 0.7,
                         child: RoundedButtonBold(
                           "Tutorial",
-                          () {},
+                          () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (ctx) => TutorialScreen(),
+                            ),);
+                          },
                         ),
                       ),
+
                       const SizedBox(height: 30),
                       SizedBox(
                         height: 60,
                         width: MediaQuery.of(context).size.width * 0.7,
                         child: RoundedButtonBold(
                           "About Us",
-                          () {},
+                          () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (ctx) => AboutUsScreen(),
+                            ),);
+                          },
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 30),
                       SizedBox(
                         height: 60,
                         width: MediaQuery.of(context).size.width * 0.3,
