@@ -108,7 +108,7 @@ class _PuzzleGameRoom extends State<PuzzleGameRoom> {
     double screen_width = MediaQuery.of(context).size.width;
 
     if (!isInfoDialogOn) {
-      Future.delayed(Duration(seconds: 1), () {
+      Future.delayed(Duration.zero, () {
         QuickAlert.show(
             context: context,
             type: QuickAlertType.info,

@@ -13,7 +13,7 @@ class LearningTabView extends StatefulWidget {
 }
 
 class _LearningTabView extends State<LearningTabView> {
-  static const String FEED_URL = "https://thechessworld.com/feed/";
+  static const String FEED_URL = "https://withchess.com/feed/";
   RssFeed? feed;
 
   List<String> feeds_link = [];
