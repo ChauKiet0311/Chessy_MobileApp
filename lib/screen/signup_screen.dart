@@ -1,5 +1,6 @@
 import 'package:chessy/components/input_textfield.dart';
 import 'package:chessy/components/rounded_button.dart';
+import 'package:chessy/screen/otp_form_screen.dart';
 import 'package:flutter/material.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -55,7 +56,12 @@ class _SignUpScreen extends State<SignUpScreen> {
                 InputTextField("Re-Enter Password", repasswordTextControler),
                 InputTextField("Email", emailTextControler),
                 InputTextField("Name", nameTextControler),
-                RoundedButton("Submit", () {})
+                RoundedButton("Submit", () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const OtpVerificationScreen()));
+                })
               ],
             )));
   }
