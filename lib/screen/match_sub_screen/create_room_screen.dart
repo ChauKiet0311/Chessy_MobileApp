@@ -19,6 +19,7 @@ class CreateRoomScreen extends StatelessWidget {
               children: [
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CreateRoomButton("Normal Match", () {
                       Navigator.push(
@@ -39,6 +40,8 @@ class CreateRoomScreen extends StatelessWidget {
                   ],
                 ),
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CreateRoomButton("Blitz 10", () {
                       Navigator.push(
