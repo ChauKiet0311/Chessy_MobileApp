@@ -11,24 +11,11 @@ class OtpVerificationScreen extends StatefulWidget {
 }
 
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
-  final otpTextControllers =
+  final List<TextEditingController> otpTextControllers =
       List.generate(6, (index) => TextEditingController());
-  final focusNodes = List.generate(6, (index) => FocusNode());
+  final List<FocusNode> focusNodes = List.generate(6, (index) => FocusNode());
   int remainingTime = 5; // 5 minutes in seconds
   bool canResend = false;
-
-  @override
-  void dispose() {
-    otpTextControllers.forEach((controller) => controller.dispose());
-    focusNodes.forEach((focusNode) => focusNode.dispose());
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    startTimer();
-  }
 
   void startTimer() {
     Future<void>.delayed(const Duration(seconds: 1), () {
@@ -48,6 +35,23 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     final minutes = (time ~/ 60).toString().padLeft(2, '0');
     final seconds = (time % 60).toString().padLeft(2, '0');
     return '$minutes:$seconds';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    startTimer();
+  }
+
+  @override
+  void dispose() {
+    for (var controller in otpTextControllers) {
+      controller.dispose();
+    }
+    for (var focusNode in focusNodes) {
+      focusNode.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -93,7 +97,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 style: TextStyle(
                   fontFamily: 'Montserrat',
                   fontWeight: FontWeight.w400,
-                  fontSize: 20,
+                  fontSize: 18,
                   color: Colors.white,
                 ),
               ),
@@ -112,7 +116,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         style:
                             const TextStyle(fontSize: 24, color: Colors.white),
                         decoration: const InputDecoration(
-                          enabledBorder: const OutlineInputBorder(
+                          enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
                           focusedBorder: const OutlineInputBorder(
@@ -144,11 +148,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       "Resend",
                       () {
                         // Do something when the Resend button is pressed
-                        setState(() {
-                          canResend = false;
-                          remainingTime = 5;
-                          startTimer();
-                        });
                       },
                     )
                   : Text(
@@ -160,7 +159,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         color: Colors.white70,
                       ),
                     ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 10),
               RoundedButton(
                 "Submit",
                 () {
