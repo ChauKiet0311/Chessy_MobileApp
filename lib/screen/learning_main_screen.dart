@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_is_empty
+
 import "package:flutter/material.dart";
 import 'package:webfeed/webfeed.dart';
 import 'package:neplox_linkpreviewer/neplox_linkpreviewer.dart';
@@ -31,7 +33,7 @@ class _LearningTabView extends State<LearningTabView> {
       feed!.items!.forEach((element) {
         if (element.link != null) {
           feeds_link.add(element.link as String);
-          print(element.link);
+          // print(element.link);
         }
       });
     });
@@ -54,7 +56,7 @@ class _LearningTabView extends State<LearningTabView> {
       const SizedBox(
         height: 20,
       ),
-      Text(
+      const Text(
         "LEARNING",
         style: TextStyle(
             fontFamily: 'Montserrat',
@@ -69,9 +71,9 @@ class _LearningTabView extends State<LearningTabView> {
         child: feeds_link.length == 0
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CircularProgressIndicator(),
-                  const SizedBox(
+                children: const [
+                  CircularProgressIndicator(),
+                  SizedBox(
                     height: 20,
                   )
                 ],

@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 
 class WaitingPlayerCard extends StatefulWidget {
   const WaitingPlayerCard(
-      {super.key, required this.profile, required this.status});
+      {super.key,
+      required this.profile,
+      required this.status,
+      required this.userName});
 
   final String status;
   final String profile;
+  final String userName;
   @override
   State<StatefulWidget> createState() {
     return _WaitingPlayerCard(profile);
@@ -63,7 +67,7 @@ class _WaitingPlayerCard extends State<WaitingPlayerCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  customText("Quang Minh"),
+                  customText(widget.userName),
                   const SizedBox(
                     height: 7,
                   )
@@ -120,7 +124,7 @@ class _WaitingPlayerCard extends State<WaitingPlayerCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  customText("Quang Minh"),
+                  customText(widget.userName),
                   const SizedBox(
                     height: 7,
                   )

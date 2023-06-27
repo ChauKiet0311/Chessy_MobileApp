@@ -36,7 +36,7 @@ class HomeScreen extends StatelessWidget {
                           MaterialPageRoute(
                               builder: (context) => const LoginScreen()));
                     }),
-                    SizedBox(
+                    const SizedBox(
                       width: 30,
                     ),
                     RoundedButton("Sign up", () {
