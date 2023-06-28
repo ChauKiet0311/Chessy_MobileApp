@@ -63,7 +63,7 @@ class _CreateNormalRoomScreen extends State<CreateNormalRoomScreen> {
     String timeAllowStop = timeStopTextController.text;
 
     String post_json =
-        '{"player1": "$player","roomName": "$roomName","secsPerMoves": "$secsPerMoves","timeAllowStop":"$timeAllowStop"}';
+        '{"player": "$player","roomName": "$roomName","secsPerMoves": "$secsPerMoves","timeAllowStop":"$timeAllowStop"}';
 
     Map<String, dynamic> map = Map();
 
@@ -153,7 +153,7 @@ class _CreateNormalRoomScreen extends State<CreateNormalRoomScreen> {
                                       secondsPerMove:
                                           secondsPerMoveTextController.text,
                                       timeStop: timeStopTextController.text,
-                                      userName: globals.currentUser.getUsername
+                                      userName: globals.currentUser.username
                                           as String,
                                       gameInfo: map,
                                     )));

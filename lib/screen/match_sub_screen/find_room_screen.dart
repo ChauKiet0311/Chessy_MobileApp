@@ -24,7 +24,9 @@ class _FindRoomScreen extends State<FindRoomScreen> {
     Map<String, String> headers = {
       HttpHeaders.contentTypeHeader: "application/json",
       HttpHeaders.authorizationHeader:
-          globals.currentUser.refreshToken as String
+          globals.currentUser.refreshToken as String,
+      HttpHeaders.accessControlAllowOriginHeader: "*",
+      'Accept': '*/*'
     };
 
     Response response = await get(Uri.https(globals.API, globals.GET_ROOM_API),
@@ -89,12 +91,12 @@ class _FindRoomScreen extends State<FindRoomScreen> {
                             headers: headers,
                             body: json_post,
                           );
+
                           print(connectGame.statusCode);
 
                           if (connectGame.statusCode == 200) {
-                            print("im here");
                             json_post =
-                                '{"player2":"$currentUsername","gameId":"$gameId"},"message": "CONNECTING"';
+                                '{"player2":"$currentUsername","gameID":"$gameId","message": "CONNECTING"}';
                             Response annouceHost = await post(
                               Uri.https(globals.API, globals.GAMEPLAY_API),
                               headers: headers,

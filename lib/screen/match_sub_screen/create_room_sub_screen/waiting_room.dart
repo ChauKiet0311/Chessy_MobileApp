@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:chessy/screen/game_screen/chess_game_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:chessy/components/waiting_player_item.dart';
 import 'package:chessy/components/rounded_button.dart';
@@ -42,6 +43,7 @@ class _WaitingScreen extends State<WaitingScreen> {
   String yourStatus = "UNREADY";
   String OpponentStatus = "UNREADY";
 
+  //Hàm này là mỗi khi socket trên server phát tín hiệu
   void onConnect(StompFrame frame) {
     stompClient.subscribe(
         destination: '/topic/game-progress/' + widget.gameInfo['gameId'],
@@ -50,7 +52,8 @@ class _WaitingScreen extends State<WaitingScreen> {
           String message = obj['message'];
 
           String headerMessage = message.split(' ').elementAt(0);
-
+          print(headerMessage);
+          //Khi mà nhận message yêu cầu chuyển trạng thái Ready
           if (headerMessage == 'READY') {
             String sendPlayer = message.split(' ').elementAt(1);
             if (sendPlayer != widget.userName) {
@@ -58,6 +61,20 @@ class _WaitingScreen extends State<WaitingScreen> {
                 setOppStatus();
               });
             }
+          } else if (headerMessage == "CONNECTING") {
+            //Message thông báo rằng player2 đang connect vào
+            String sendPlayer2 = obj['player2'];
+
+            setState(() {
+              widget.gameInfo['player2'] = sendPlayer2;
+            });
+          } else if (headerMessage == "STARTGAME") {
+            print("Im in start");
+            stompClient.deactivate();
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => GameRoom(gameInfo: widget.gameInfo)));
           }
         });
   }
@@ -119,6 +136,22 @@ class _WaitingScreen extends State<WaitingScreen> {
         OpponentStatus = "UNREADY";
       }
     });
+  }
+
+  void startGame() async {
+    String currentGameId = widget.gameInfo['gameId'];
+    String currentUser = widget.userName;
+
+    Map<String, String> headers = {
+      HttpHeaders.contentTypeHeader: "application/json",
+      HttpHeaders.authorizationHeader:
+          globals.currentUser.refreshToken as String
+    };
+
+    String post_json = '{"gameID":"$currentGameId","message":"STARTGAME"}';
+    Response response = await post(Uri.https(globals.API, globals.GAMEPLAY_API),
+        headers: headers, body: post_json);
+    print(response.body);
   }
 
   @override
@@ -191,7 +224,9 @@ class _WaitingScreen extends State<WaitingScreen> {
               WaitingPlayerCard(
                 profile: "OpponentProfile",
                 status: OpponentStatus,
-                userName: "NAME",
+                userName: widget.gameInfo['player2'] == null
+                    ? "NAME"
+                    : widget.gameInfo['player2'],
               ),
               const SizedBox(
                 height: 35,
@@ -202,7 +237,12 @@ class _WaitingScreen extends State<WaitingScreen> {
                   RoundedButton("Ready", () {
                     setYouStatus();
                   }),
-                  RoundedButton("Play", () {})
+                  RoundedButton("Play", () async {
+                    if (OpponentStatus == "READY" && yourStatus == "READY") {
+                      print("im here");
+                      startGame();
+                    }
+                  })
                 ],
               )
             ]))));

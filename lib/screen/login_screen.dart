@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:chessy/components/input_textfield.dart';
 import 'package:chessy/components/rounded_button.dart';
@@ -22,7 +23,13 @@ class _LoginScreen extends State<LoginScreen> {
 
   Future<Map<String, dynamic>> checkLogin(
       String username, String password) async {
-    Map<String, String> headers = {"Content-type": "application/json"};
+    Map<String, String> headers = {
+      HttpHeaders.contentTypeHeader: "application/json",
+      HttpHeaders.authorizationHeader:
+          globals.currentUser.refreshToken as String,
+      HttpHeaders.accessControlAllowOriginHeader: "*",
+      'Accept': '*/*'
+    };
     String post_json = '{"username": "$username", "password": "$password"}';
 
     Map<String, dynamic> map = Map();

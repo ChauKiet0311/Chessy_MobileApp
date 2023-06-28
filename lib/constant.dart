@@ -2,6 +2,8 @@
 
 library chessy.globals;
 
+import 'dart:io';
+
 import 'package:chessy/models/UserAccess.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
