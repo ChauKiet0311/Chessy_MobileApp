@@ -22,7 +22,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final repasswordTextControler = TextEditingController();
   final emailTextControler = TextEditingController();
   final nameTextControler = TextEditingController();
-  bool isVerified = false;
   File avatarImage = File("");
 
   Future<void> _pickImageFromGallery() async {
@@ -71,9 +70,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  void handleVerification(bool isVerified) {
-    // Do something with the verification state
-  }
+  
 
   void handleSubmit() async {
     // Lấy thông tin từ các TextField
@@ -83,10 +80,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     String name = nameTextControler.text;
 
     // Nếu ảnh đại diện đã được chọn, upload ảnh lên Imgur và lấy link ảnh
-    String avatarUrl = '';
+    String avatarURL = '';
     if (avatarImage != File("")) {
       try {
-        avatarUrl = await uploadImageToImgur(avatarImage);
+        avatarURL = await uploadImageToImgur(avatarImage);
       } catch (e) {
         // Xử lý khi upload ảnh lỗi
         print('Error uploading image: $e');
@@ -99,7 +96,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       'password': password,
       'email': email,
       'name': name,
-      'avatarUrl': avatarUrl,
+      'avatarURL': avatarURL,
     };
 
     // Gửi request POST để đăng ký tài khoản
@@ -119,7 +116,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         MaterialPageRoute(
           builder: (context) => OtpVerificationScreen(
             email: emailTextControler.text,
-            isVerify: handleVerification,
           ),
         ),
       );

@@ -3,13 +3,9 @@ import 'package:chessy/components/rounded_button.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   final String email;
-  final bool isVerify;
-  final Function(bool) isVerificationComplete;
   const OtpVerificationScreen({
     Key? key,
     required this.email,
-    required this.isVerify,
-    required this.isVerificationComplete,
   }) : super(key: key);
 
   @override
@@ -180,9 +176,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               const SizedBox(height: 10),
               RoundedButton(
                 "Submit",
-                () {
-                  widget.isVerificationComplete(true);
-                },
+                () {},
               ),
             ],
           ),
