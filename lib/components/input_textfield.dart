@@ -4,8 +4,10 @@ import 'package:chessy/components/rounded_textfield.dart';
 class InputTextField extends StatelessWidget {
   final String nameField;
   final TextEditingController textFieldControler;
+  final bool obscureText;
 
-  const InputTextField(this.nameField, this.textFieldControler, {super.key});
+  const InputTextField(this.nameField, this.textFieldControler,
+      {super.key, this.obscureText = false});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class InputTextField extends StatelessWidget {
           nameField,
           style: const TextStyle(fontFamily: 'Montserrat', color: Colors.white),
         ),
-        RoundedTextField(textFieldControler)
+        RoundedTextField(textFieldControler, obscureText: obscureText)
       ],
     );
   }

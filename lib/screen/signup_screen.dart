@@ -6,6 +6,9 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:chessy/screen/otp_form_screen.dart';
+import 'package:chessy/screen/login_screen.dart';
+import 'package:quickalert/quickalert.dart';
+import 'package:chessy/screen/home_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -32,6 +35,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       setState(() {
         avatarImage = File(pickedImage.path);
       });
+    } else {
+      // Nếu file ảnh chưa được chọn, bỏ qua bước cập nhật giá trị của biến avatarImage
+      print('No image selected.');
     }
   }
 
@@ -70,15 +76,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  
-
-  void handleSubmit() async {
+  void handleSubmit(BuildContext context) async {
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.loading,
+      title: 'Loading',
+      text: 'Wait a minute',
+    );
     // Lấy thông tin từ các TextField
     String username = usernameTextControler.text;
     String password = passwordTextControler.text;
     String email = emailTextControler.text;
     String name = nameTextControler.text;
 
+    if (username.isEmpty || password.isEmpty || email.isEmpty || name.isEmpty) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: 'Error',
+        text: 'Please enter all fields',
+      );
+      return;
+    }
     // Nếu ảnh đại diện đã được chọn, upload ảnh lên Imgur và lấy link ảnh
     String avatarURL = '';
     if (avatarImage != File("")) {
@@ -111,13 +130,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     // Kiểm tra response và chuyển sang màn hình xác nhận OTP nếu thành công
     if (response.statusCode == 200) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => OtpVerificationScreen(
-            email: emailTextControler.text,
-          ),
-        ),
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.success,
+        text: "Sign up success",
+        onConfirmBtnTap: () => {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => OtpVerificationScreen(
+                        username: usernameTextControler.text,
+                        password: passwordTextControler.text,
+                        email: emailTextControler.text,
+                      )),
+              (Route<dynamic> route) => false)
+        },
       );
     } else {
       // Xử lý khi đăng ký thất bại
@@ -138,11 +165,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Chessy")),
+      appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()));
+            },
+          ),
+          title: const Text("Chessy")),
       body: SingleChildScrollView(
         child: Container(
           alignment: Alignment.center,
-          padding: const EdgeInsets.only(bottom: 86),
+          padding: const EdgeInsets.only(bottom: 92),
           decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage('image/167.jpg'),
@@ -189,12 +224,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: const Text('Choose Avatar'),
                 ),
               ),
-              InputTextField("Username", usernameTextControler),
-              InputTextField("Password", passwordTextControler),
-              InputTextField("Re-Enter Password", repasswordTextControler),
-              InputTextField("Email", emailTextControler),
-              InputTextField("Name", nameTextControler),
-              RoundedButton("Submit", handleSubmit),
+              InputTextField("Username", usernameTextControler,
+                  obscureText: false),
+              InputTextField("Password", passwordTextControler,
+                  obscureText: true),
+              InputTextField("Re-Enter Password", repasswordTextControler,
+                  obscureText: true),
+              InputTextField("Email", emailTextControler, obscureText: false),
+              InputTextField("Name", nameTextControler, obscureText: false),
+              RoundedButton("Submit", () => handleSubmit(context)),
             ],
           ),
         ),

@@ -9,6 +9,7 @@ import 'package:http/http.dart';
 import 'package:chessy/constant.dart' as globals;
 import 'package:material_dialogs/material_dialogs.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:chessy/screen/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -94,7 +95,17 @@ class _LoginScreen extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Chessy")),
+        appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HomeScreen()));
+              },
+            ),
+            title: const Text("Chessy")),
         body: Container(
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
@@ -115,8 +126,10 @@ class _LoginScreen extends State<LoginScreen> {
                       fontSize: 32,
                       color: Colors.white),
                 ),
-                InputTextField("Username", usernameTextController),
-                InputTextField("Password", passwordTextController),
+                InputTextField("Username", usernameTextController,
+                    obscureText: false),
+                InputTextField("Password", passwordTextController,
+                    obscureText: true),
                 const SizedBox(
                   height: 30,
                 ),
