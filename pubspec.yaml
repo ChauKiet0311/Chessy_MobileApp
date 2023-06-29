@@ -48,6 +48,10 @@ dependencies:
   stack: ^0.2.1
   quickalert: ^1.0.1
   intl: ^0.17.0
+  image_picker: ^0.8.4+4
+  logger: ^1.0.0
+  flutter_image_compress: ^2.0.3
+  path_provider: ^2.0.2
   
 
 
