@@ -2,7 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:chessy/components/rounded_button.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
-  const OtpVerificationScreen({Key? key}) : super(key: key);
+  final String email;
+  final bool isVerify;
+  final Function(bool) isVerificationComplete;
+  const OtpVerificationScreen({
+    Key? key,
+    required this.email,
+    required this.isVerify,
+    required this.isVerificationComplete,
+  }) : super(key: key);
 
   @override
   State<OtpVerificationScreen> createState() {
@@ -59,6 +67,15 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: const Text("OTP Verification"),
+      ),
       body: Container(
         width: width,
         height: height,
@@ -92,8 +109,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
-                "your_email@example.com",
+              Text(
+                widget
+                    .email, // Sử dụng thuộc tính email để hiển thị email của người dùng đã đăng ký
                 style: TextStyle(
                   fontFamily: 'Montserrat',
                   fontWeight: FontWeight.w400,
@@ -119,7 +137,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
-                          focusedBorder: const OutlineInputBorder(
+                          focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white),
                           ),
                         ),
@@ -163,7 +181,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               RoundedButton(
                 "Submit",
                 () {
-                  // Do something when the button is submitted
+                  widget.isVerificationComplete(true);
                 },
               ),
             ],

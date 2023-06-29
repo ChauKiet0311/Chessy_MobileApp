@@ -1,23 +1,133 @@
 import 'package:chessy/components/input_textfield.dart';
 import 'package:chessy/components/rounded_button.dart';
-import 'package:chessy/screen/otp_form_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:chessy/screen/otp_form_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return _SignUpScreen();
+  State<SignUpScreen> createState() {
+    return _SignUpScreenState();
   }
 }
 
-class _SignUpScreen extends State<SignUpScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   final usernameTextControler = TextEditingController();
   final passwordTextControler = TextEditingController();
   final repasswordTextControler = TextEditingController();
   final emailTextControler = TextEditingController();
   final nameTextControler = TextEditingController();
+  bool isVerified = false;
+  File avatarImage = File("");
+
+  Future<void> _pickImageFromGallery() async {
+    final pickedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      setState(() {
+        avatarImage = File(pickedImage.path);
+      });
+    }
+  }
+
+  Future<String> uploadImageToImgur(File imageFile) async {
+    String clientId =
+        '3810d133742c5a6'; // Thay YOUR_CLIENT_ID bằng Client ID của ứng dụng Imgur của bạn
+
+    // Đọc dữ liệu ảnh
+    List<int> imageBytes = await imageFile.readAsBytes();
+    String base64Image = base64Encode(imageBytes);
+
+    // Tạo request body
+    Map<String, dynamic> requestBody = {
+      'image': base64Image,
+    };
+
+    // Tạo header
+    Map<String, String> headers = {
+      'Authorization': 'Client-ID $clientId',
+    };
+
+    // Gửi request POST để upload ảnh lên Imgur
+    var response = await http.post(
+      Uri.parse('https://api.imgur.com/3/image'),
+      headers: headers,
+      body: requestBody,
+    );
+
+    // Kiểm tra response và trả về link ảnh
+    if (response.statusCode == 200) {
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+      String imageUrl = responseData['data']['link'];
+      return imageUrl;
+    } else {
+      throw Exception('Upload failed');
+    }
+  }
+
+  void handleVerification(bool isVerified) {
+    // Do something with the verification state
+  }
+
+  void handleSubmit() async {
+    // Lấy thông tin từ các TextField
+    String username = usernameTextControler.text;
+    String password = passwordTextControler.text;
+    String email = emailTextControler.text;
+    String name = nameTextControler.text;
+
+    // Nếu ảnh đại diện đã được chọn, upload ảnh lên Imgur và lấy link ảnh
+    String avatarUrl = '';
+    if (avatarImage != File("")) {
+      try {
+        avatarUrl = await uploadImageToImgur(avatarImage);
+      } catch (e) {
+        // Xử lý khi upload ảnh lỗi
+        print('Error uploading image: $e');
+      }
+    }
+
+    // Tạo request body
+    Map<String, dynamic> requestBody = {
+      'username': username,
+      'password': password,
+      'email': email,
+      'name': name,
+      'avatarUrl': avatarUrl,
+    };
+
+    // Gửi request POST để đăng ký tài khoản
+    var response = await http.post(
+      Uri.parse(
+          'https://chessy-backend.onrender.com/api/v1/authenticate/register'),
+      body: jsonEncode(requestBody),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    // Kiểm tra response và chuyển sang màn hình xác nhận OTP nếu thành công
+    if (response.statusCode == 200) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OtpVerificationScreen(
+            email: emailTextControler.text,
+            isVerify: handleVerification,
+          ),
+        ),
+      );
+    } else {
+      // Xử lý khi đăng ký thất bại
+      print('Error registering account: ${response.body}');
+    }
+  }
 
   @override
   void dispose() {
@@ -32,37 +142,67 @@ class _SignUpScreen extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("Chessy")),
-        body: Container(
-            alignment: Alignment.center,
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: const AssetImage('image/167.jpg'),
-                    fit: BoxFit.cover)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "SIGN UP",
-                  style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.w700,
-                      fontSize: 32,
-                      color: Colors.white),
+      appBar: AppBar(title: const Text("Chessy")),
+      body: SingleChildScrollView(
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.only(bottom: 86),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('image/167.jpg'),
+              fit: BoxFit.fill,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "SIGN UP",
+                style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 32,
+                  color: Colors.white,
                 ),
-                InputTextField("Username", usernameTextControler),
-                InputTextField("Password", passwordTextControler),
-                InputTextField("Re-Enter Password", repasswordTextControler),
-                InputTextField("Email", emailTextControler),
-                InputTextField("Name", nameTextControler),
-                RoundedButton("Submit", () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => OtpVerificationScreen()));
-                })
-              ],
-            )));
+              ),
+              if (avatarImage != File(""))
+                CircleAvatar(
+                  radius: 60,
+                  child: ClipOval(
+                    child: Image.file(
+                      avatarImage,
+                      width: 120,
+                      height: 120,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: ElevatedButton(
+                  onPressed: _pickImageFromGallery,
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(110, 30),
+                    backgroundColor: const Color(0xFFF9D8F4),
+                    foregroundColor: const Color(0xFF811F86),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ),
+                  ),
+                  child: const Text('Choose Avatar'),
+                ),
+              ),
+              InputTextField("Username", usernameTextControler),
+              InputTextField("Password", passwordTextControler),
+              InputTextField("Re-Enter Password", repasswordTextControler),
+              InputTextField("Email", emailTextControler),
+              InputTextField("Name", nameTextControler),
+              RoundedButton("Submit", handleSubmit),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
