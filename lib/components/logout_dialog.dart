@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:chessy/components/rounded_button_bold_for_dialog.dart';
+import 'package:chessy/screen/login_screen.dart';
 
 class LogoutDialog extends StatelessWidget {
   final Function() onLogout;
 
-  const LogoutDialog({super.key, required this.onLogout});
+  const LogoutDialog({Key? key, required this.onLogout}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,13 @@ class LogoutDialog extends StatelessWidget {
                 "Log out",
                 () {
                   onLogout();
-                  Navigator.of(context).pop();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => LoginScreen(),
+                    ),
+                    (Route<dynamic> route) => false,
+                  );
                 },
               ),
             ),

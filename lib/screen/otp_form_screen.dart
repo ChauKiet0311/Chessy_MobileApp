@@ -1,10 +1,18 @@
+import 'package:chessy/screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:chessy/components/rounded_button.dart';
+import 'package:http/http.dart' as http;
+import 'package:quickalert/quickalert.dart';
+import 'dart:convert';
 
 class OtpVerificationScreen extends StatefulWidget {
+  final String username;
+  final String password;
   final String email;
   const OtpVerificationScreen({
     Key? key,
+    required this.username,
+    required this.password,
     required this.email,
   }) : super(key: key);
 
@@ -39,6 +47,147 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     final minutes = (time ~/ 60).toString().padLeft(2, '0');
     final seconds = (time % 60).toString().padLeft(2, '0');
     return '$minutes:$seconds';
+  }
+
+  Future<String?> getRefreshToken(String username, String password) async {
+    // Create request body
+    Map<String, dynamic> requestBody = {
+      'username': username,
+      'password': password,
+    };
+
+    // Send POST request to login user and get refresh token
+    var response = await http.post(
+      Uri.parse(
+          'https://chessy-backend.onrender.com/api/v1/authenticate/login'),
+      body: jsonEncode(requestBody),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    // Check response and return refresh token
+    if (response.statusCode == 200) {
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+      String refreshToken = responseData['refreshToken'];
+      return refreshToken;
+    } else {
+      // Handle login error
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        text: "Failed to get refresh token",
+      );
+      return null;
+    }
+  }
+
+  Future<void> handleResend() async {
+    String username = widget.username;
+    String email = widget.email;
+    String? refreshToken = await getRefreshToken(username, widget.password);
+
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.loading,
+      title: 'Loading',
+      text: 'Wait a minute',
+    );
+
+    if (refreshToken != null) {
+      Map<String, dynamic> requestBody = {
+        'username': username,
+        'email': email,
+      };
+      var response = await http.post(
+        Uri.parse(
+            'https://chessy-backend.onrender.com/api/v1/authenticate/regenerate'),
+        body: jsonEncode(requestBody),
+        headers: {
+          'Authorization': 'Bearer $refreshToken',
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.statusCode == 200) {
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.success,
+          text: "Resend success",
+        );
+        remainingTime = 5; // reset remaining time to 5 minutes
+        canResend = false; // disable resend button
+        startTimer(); // start countdown timer again
+      } else {
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          text: "Resend failed, $username, $refreshToken, ${response.body}",
+        );
+      }
+    } else {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        text: "Failed to get refresh token",
+      );
+    }
+  }
+
+  void handleSubmit(BuildContext context) async {
+    String otp = otpTextControllers.map((controller) => controller.text).join();
+    String? refreshToken =
+        await getRefreshToken(widget.username, widget.password);
+    String username = widget.username;
+    String email = widget.email;
+
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.loading,
+      title: 'Loading',
+      text: 'Wait a minute',
+    );
+
+    if (refreshToken != null) {
+      Map<String, dynamic> requestBody = {
+        'username': username,
+        'email': email,
+        'otp': otp,
+      };
+      var response = await http.post(
+        Uri.parse(
+            'https://chessy-backend.onrender.com/api/v1/authenticate/verify'),
+        body: jsonEncode(requestBody),
+        headers: {
+          'Authorization': 'Bearer $refreshToken',
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.statusCode == 200) {
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.success,
+          text: "Verification success",
+          onConfirmBtnTap: () => {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+                (Route<dynamic> route) => false)
+          },
+        );
+      } else {
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          text: "Verification failed, $otp, $refreshToken,${response.body}",
+        );
+      }
+    } else {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        text: "Failed to get refresh token",
+      );
+    }
   }
 
   @override
@@ -160,9 +309,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               canResend
                   ? RoundedButton(
                       "Resend",
-                      () {
-                        // Do something when the Resend button is pressed
-                      },
+                      handleResend, // pass handleResend as the callback
                     )
                   : Text(
                       "Resend code after ${formatTime(remainingTime)}",
@@ -176,7 +323,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               const SizedBox(height: 10),
               RoundedButton(
                 "Submit",
-                () {},
+                () => handleSubmit(context),
               ),
             ],
           ),

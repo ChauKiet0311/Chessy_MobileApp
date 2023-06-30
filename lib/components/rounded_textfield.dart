@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 class RoundedTextField extends StatelessWidget {
   final TextEditingController textFieldControler;
+  final bool obscureText;
 
-  const RoundedTextField(this.textFieldControler, {Key? key}) : super(key: key);
+  const RoundedTextField(this.textFieldControler,
+      {Key? key, this.obscureText = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,6 +17,7 @@ class RoundedTextField extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
             child: TextField(
               controller: textFieldControler,
+              obscureText: obscureText,
               decoration: InputDecoration(
                   isDense: true,
                   contentPadding:
