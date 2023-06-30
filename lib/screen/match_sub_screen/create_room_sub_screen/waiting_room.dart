@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:chessy/screen/game_screen/chess_game_screen.dart';
+import 'package:chessy/screen/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:chessy/components/waiting_player_item.dart';
 import 'package:chessy/components/rounded_button.dart';
@@ -75,6 +76,21 @@ class _WaitingScreen extends State<WaitingScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => GameRoom(gameInfo: widget.gameInfo)));
+          } else if (headerMessage == "LEAVEGAME") {
+            String sendPlayer = message.split(' ').elementAt(1);
+            if (sendPlayer == widget.userName) {
+              stompClient.deactivate();
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => MainScreen()),
+                  (Route<dynamic> route) => false);
+            } else {
+              String sendPlayer2 = "WAITTING...";
+
+              setState(() {
+                widget.gameInfo['player2'] = sendPlayer2;
+              });
+            }
           }
         });
   }
@@ -201,7 +217,7 @@ class _WaitingScreen extends State<WaitingScreen> {
               WaitingPlayerCard(
                 profile: "YourProfile",
                 status: yourStatus,
-                userName: widget.userName,
+                userName: widget.gameInfo['player1'],
               ),
               const SizedBox(
                 height: 30,
@@ -245,9 +261,37 @@ class _WaitingScreen extends State<WaitingScreen> {
                   })
                 ],
               ),
+              SizedBox(
+                height: 10,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [RoundedButton("Leave", () {})],
+                children: [
+                  RoundedButton("Leave", () async {
+                    Map<String, String> headers = {
+                      HttpHeaders.contentTypeHeader: "application/json",
+                      HttpHeaders.authorizationHeader:
+                          globals.currentUser.refreshToken as String
+                    };
+
+                    String currentGameId = widget.gameInfo['gameId'];
+                    String currentUser = widget.userName;
+                    String post_json =
+                        '{"gameID":"$currentGameId","player1":"$currentUser","message":"LEAVEGAME $currentUser"}';
+
+                    Response response = await post(
+                        Uri.https(globals.API, globals.GAMEPLAY_API),
+                        headers: headers,
+                        body: post_json);
+
+                    post_json =
+                        '{"gameId":"$currentGameId","player":"$currentUser"}';
+                    response = await post(
+                        Uri.https(globals.API, globals.LEAVE_API),
+                        headers: headers,
+                        body: post_json);
+                  })
+                ],
               )
             ]))));
   }

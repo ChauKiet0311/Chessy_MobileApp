@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:chessy/components/rounded_button.dart';
+import 'package:chessy/screen/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chess_board/flutter_chess_board.dart';
 import 'package:http/http.dart';
@@ -33,6 +35,10 @@ class _GameRoom extends State<GameRoom> {
 
   bool isAnnoucePlayeSideOn = false;
   bool isOnFirstTimer = false;
+  Map<String, String> headers = {
+    HttpHeaders.contentTypeHeader: "application/json",
+    HttpHeaders.authorizationHeader: globals.currentUser.refreshToken as String
+  };
 
   //Xử lý các gói tin được gửi thông qua socket ở đây
   void onConnect(StompFrame frame) {
@@ -70,8 +76,37 @@ class _GameRoom extends State<GameRoom> {
           } else {
             if (message == "SYSTEM FINISH") {
               stompClient.deactivate();
-              Navigator.pop(context);
-              Navigator.pop(context);
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => MainScreen()),
+                  (Route<dynamic> route) => false);
+            }
+            if (message == "SURRENDER") {
+              String currentPlayer =
+                  widget.playerPosition == "W" ? 'player1' : 'player2';
+
+              if (obj[currentPlayer] == "NULL") {
+                stompClient.deactivate();
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => MainScreen()),
+                    (Route<dynamic> route) => false);
+              } else {
+                stompClient.deactivate();
+                String currentGameId = widget.gameInfo['gameId'];
+                finishGame();
+                QuickAlert.show(
+                    context: context,
+                    type: QuickAlertType.info,
+                    text: 'Your Opponent Surrender',
+                    confirmBtnText: "Okay",
+                    onConfirmBtnTap: () {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => MainScreen()),
+                          (Route<dynamic> route) => false);
+                    });
+              }
             }
           }
         });
@@ -97,6 +132,14 @@ class _GameRoom extends State<GameRoom> {
     //Đây là khi mà lượt của mình
     movesController.pause();
     return true;
+  }
+
+  void finishGame() async {
+    String currentGameId = widget.gameInfo['gameId'];
+    String json_post = '{"gameId":"$currentGameId"}';
+
+    Response response = await post(Uri.https(globals.API, globals.FINISH_API),
+        headers: headers, body: json_post);
   }
 
   void overtimeFinish(BuildContext context) async {
@@ -208,16 +251,55 @@ class _GameRoom extends State<GameRoom> {
                 ),
               ),
               isOnFirstTimer
-                  ? Countdown(
-                      seconds: int.parse(widget.gameInfo['secsPerMoves']),
-                      build: (_, double time) => customText(time.toString()),
-                      interval: Duration(milliseconds: 100),
-                      controller: movesController,
-                      onFinished: () async {
-                        overtimeFinish(context);
-                      },
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        customText("Your time this move"),
+                        Countdown(
+                          seconds: int.parse(widget.gameInfo['secsPerMoves']),
+                          build: (_, double time) =>
+                              customText(time.toString()),
+                          interval: Duration(milliseconds: 100),
+                          controller: movesController,
+                          onFinished: () async {
+                            overtimeFinish(context);
+                          },
+                        ),
+                      ],
                     )
                   : customText("Please Wait for the first user go!"),
+              SizedBox(
+                height: 20,
+              ),
+              Center(
+                child: RoundedButton("Surrender", () {
+                  QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.warning,
+                      text: 'Do you want to surrender?!',
+                      confirmBtnText: "Okay",
+                      onConfirmBtnTap: () async {
+                        String currentSide_send = widget.playerPosition;
+                        String currentGameId = widget.gameInfo['gameId'];
+                        String currentPlayer1 = widget.gameInfo['player1'];
+                        String currentPlayer2 = widget.gameInfo['player2'];
+                        String post_json = "";
+                        if (widget.playerPosition == "W") {
+                          post_json =
+                              '{"player1":"NULL","player2":"$currentPlayer2","gameID":"$currentGameId","message": "SURRENDER","currentSide":"$currentSide_send"}';
+                        } else {
+                          post_json =
+                              '{"player1":"$currentPlayer1","player2":"NULL","gameID":"$currentGameId","message": "SURRENDER","currentSide":"$currentSide_send"}';
+                        }
+
+                        Response response = await post(
+                            Uri.https(globals.API, globals.GAMEPLAY_API),
+                            headers: headers,
+                            body: post_json);
+                        Navigator.pop(context);
+                      });
+                }),
+              )
             ],
           )),
         ));
