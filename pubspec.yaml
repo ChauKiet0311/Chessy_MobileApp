@@ -52,6 +52,7 @@ dependencies:
   logger: ^1.0.0
   flutter_image_compress: ^2.0.3
   path_provider: ^2.0.2
+  timer_count_down: ^2.2.2
   
 
 

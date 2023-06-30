@@ -9,6 +9,8 @@ import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'dart:convert';
 import 'package:chessy/constant.dart' as globals;
+import 'package:timer_count_down/timer_count_down.dart';
+import 'package:timer_count_down/timer_controller.dart';
 
 class GameRoom extends StatefulWidget {
   final Map<String, dynamic> gameInfo;
@@ -27,9 +29,12 @@ class GameRoom extends StatefulWidget {
 
 class _GameRoom extends State<GameRoom> {
   ChessBoardController controller = ChessBoardController();
+  CountdownController movesController = CountdownController(autoStart: true);
 
   bool isAnnoucePlayeSideOn = false;
+  bool isOnFirstTimer = false;
 
+  //Xử lý các gói tin được gửi thông qua socket ở đây
   void onConnect(StompFrame frame) {
     stompClient.subscribe(
         destination: '/topic/game-progress/' + widget.gameInfo['gameId'],
@@ -40,6 +45,7 @@ class _GameRoom extends State<GameRoom> {
           String headerMessage = message.split(' ').elementAt(0);
 
           if (headerMessage == "MOVE") {
+            isOnFirstTimer = true;
             String fen = obj['fen'];
             controller.loadFen(fen);
 
@@ -47,10 +53,26 @@ class _GameRoom extends State<GameRoom> {
             // Vì vậy phải set ngược lại ngay khi vừa mới gửi xong
             widget.currentGameSide = obj['currentSide'] == "W" ? "B" : "W";
 
+            String currentSideAnnouce =
+                widget.currentGameSide == "W" ? "White" : "Black";
+
+            QuickAlert.show(
+                context: context,
+                type: QuickAlertType.info,
+                text: 'This is $currentSideAnnouce Move!',
+                confirmBtnText: "Okay",
+                onConfirmBtnTap: () => Navigator.pop(context));
+
             //Sau đó kiểm tra rằng bên nào sẽ được đi và không được đi
             setState(() {
               widget.isMoveAble = isThisSideFreeze();
             });
+          } else {
+            if (message == "SYSTEM FINISH") {
+              stompClient.deactivate();
+              Navigator.pop(context);
+              Navigator.pop(context);
+            }
           }
         });
   }
@@ -66,9 +88,38 @@ class _GameRoom extends State<GameRoom> {
 
   bool isThisSideFreeze() {
     if (widget.playerPosition == widget.currentGameSide) {
+      movesController.restart();
+      movesController.start();
+      //Lượt của đối thủ
       return false;
     }
+
+    //Đây là khi mà lượt của mình
+    movesController.pause();
     return true;
+  }
+
+  void overtimeFinish(BuildContext context) async {
+    //kết thúc game
+    Map<String, String> headers = {
+      HttpHeaders.contentTypeHeader: "application/json",
+      HttpHeaders.authorizationHeader:
+          globals.currentUser.refreshToken as String
+    };
+    String currentGameId = widget.gameInfo['gameId'];
+    String json_post = '{"gameId":"$currentGameId"}';
+
+    Response response = await post(Uri.https(globals.API, globals.FINISH_API),
+        headers: headers, body: json_post);
+
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        text: 'You have run out of time! You lost',
+        confirmBtnText: "Okay",
+        onConfirmBtnTap: () {
+          Navigator.pop(context);
+        });
   }
 
   @override
@@ -81,10 +132,24 @@ class _GameRoom extends State<GameRoom> {
 
     if (globals.currentUser.username == player1) {
       widget.playerPosition = "W";
+      isOnFirstTimer = true;
     } else {
       widget.playerPosition = "B";
+      movesController.pause();
+      isOnFirstTimer = false;
     }
     widget.isMoveAble = isThisSideFreeze();
+  }
+
+  Text customText(String name) {
+    return Text(
+      name,
+      style: TextStyle(
+          fontFamily: 'Montserrat',
+          fontWeight: FontWeight.w700,
+          fontSize: 15,
+          color: Colors.white),
+    );
   }
 
   @override
@@ -120,6 +185,7 @@ class _GameRoom extends State<GameRoom> {
                       : PlayerColor.black,
                   controller: controller,
                   onMove: () async {
+                    movesController.pause();
                     String currentFen = controller.getFen();
                     String currentPlayer1 = widget.gameInfo['player1'];
                     String currentPlayer2 = widget.gameInfo['player2'];
@@ -141,6 +207,17 @@ class _GameRoom extends State<GameRoom> {
                   },
                 ),
               ),
+              isOnFirstTimer
+                  ? Countdown(
+                      seconds: int.parse(widget.gameInfo['secsPerMoves']),
+                      build: (_, double time) => customText(time.toString()),
+                      interval: Duration(milliseconds: 100),
+                      controller: movesController,
+                      onFinished: () async {
+                        overtimeFinish(context);
+                      },
+                    )
+                  : customText("Please Wait for the first user go!"),
             ],
           )),
         ));
