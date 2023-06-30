@@ -244,6 +244,10 @@ class _WaitingScreen extends State<WaitingScreen> {
                     }
                   })
                 ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [RoundedButton("Leave", () {})],
               )
             ]))));
   }

@@ -3,16 +3,23 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_chess_board/flutter_chess_board.dart';
 import 'package:http/http.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'dart:convert';
 import 'package:chessy/constant.dart' as globals;
+import 'package:timer_count_down/timer_count_down.dart';
+import 'package:timer_count_down/timer_controller.dart';
 
 class GameRoom extends StatefulWidget {
   final Map<String, dynamic> gameInfo;
 
   GameRoom({required this.gameInfo});
+
+  bool isMoveAble = false;
+  String playerPosition = "";
+  String currentGameSide = "W";
 
   @override
   State<StatefulWidget> createState() {
@@ -22,7 +29,12 @@ class GameRoom extends StatefulWidget {
 
 class _GameRoom extends State<GameRoom> {
   ChessBoardController controller = ChessBoardController();
+  CountdownController movesController = CountdownController(autoStart: true);
 
+  bool isAnnoucePlayeSideOn = false;
+  bool isOnFirstTimer = false;
+
+  //Xử lý các gói tin được gửi thông qua socket ở đây
   void onConnect(StompFrame frame) {
     stompClient.subscribe(
         destination: '/topic/game-progress/' + widget.gameInfo['gameId'],
@@ -33,8 +45,34 @@ class _GameRoom extends State<GameRoom> {
           String headerMessage = message.split(' ').elementAt(0);
 
           if (headerMessage == "MOVE") {
+            isOnFirstTimer = true;
             String fen = obj['fen'];
             controller.loadFen(fen);
+
+            //Nhận về ở bên kia là hiện tại ở phía bên người mới gửi nhưng mà cả hai đều nhận được
+            // Vì vậy phải set ngược lại ngay khi vừa mới gửi xong
+            widget.currentGameSide = obj['currentSide'] == "W" ? "B" : "W";
+
+            String currentSideAnnouce =
+                widget.currentGameSide == "W" ? "White" : "Black";
+
+            QuickAlert.show(
+                context: context,
+                type: QuickAlertType.info,
+                text: 'This is $currentSideAnnouce Move!',
+                confirmBtnText: "Okay",
+                onConfirmBtnTap: () => Navigator.pop(context));
+
+            //Sau đó kiểm tra rằng bên nào sẽ được đi và không được đi
+            setState(() {
+              widget.isMoveAble = isThisSideFreeze();
+            });
+          } else {
+            if (message == "SYSTEM FINISH") {
+              stompClient.deactivate();
+              Navigator.pop(context);
+              Navigator.pop(context);
+            }
           }
         });
   }
@@ -48,16 +86,87 @@ class _GameRoom extends State<GameRoom> {
     onWebSocketError: (dynamic error) => print(error.toString()),
   ));
 
+  bool isThisSideFreeze() {
+    if (widget.playerPosition == widget.currentGameSide) {
+      movesController.restart();
+      movesController.start();
+      //Lượt của đối thủ
+      return false;
+    }
+
+    //Đây là khi mà lượt của mình
+    movesController.pause();
+    return true;
+  }
+
+  void overtimeFinish(BuildContext context) async {
+    //kết thúc game
+    Map<String, String> headers = {
+      HttpHeaders.contentTypeHeader: "application/json",
+      HttpHeaders.authorizationHeader:
+          globals.currentUser.refreshToken as String
+    };
+    String currentGameId = widget.gameInfo['gameId'];
+    String json_post = '{"gameId":"$currentGameId"}';
+
+    Response response = await post(Uri.https(globals.API, globals.FINISH_API),
+        headers: headers, body: json_post);
+
+    QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        text: 'You have run out of time! You lost',
+        confirmBtnText: "Okay",
+        onConfirmBtnTap: () {
+          Navigator.pop(context);
+        });
+  }
+
   @override
   void initState() {
     super.initState();
     stompClient.activate();
+
+    String player1 = widget.gameInfo['player1'];
+    String player2 = widget.gameInfo['player2'];
+
+    if (globals.currentUser.username == player1) {
+      widget.playerPosition = "W";
+      isOnFirstTimer = true;
+    } else {
+      widget.playerPosition = "B";
+      movesController.pause();
+      isOnFirstTimer = false;
+    }
+    widget.isMoveAble = isThisSideFreeze();
   }
 
-  String playerPosition = "";
+  Text customText(String name) {
+    return Text(
+      name,
+      style: TextStyle(
+          fontFamily: 'Montserrat',
+          fontWeight: FontWeight.w700,
+          fontSize: 15,
+          color: Colors.white),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (!isAnnoucePlayeSideOn) {
+      Future.delayed(Duration.zero, () {
+        String currentSideAnnouce = widget.playerPosition;
+        QuickAlert.show(
+            context: context,
+            type: QuickAlertType.info,
+            text: 'You are on the $currentSideAnnouce side!',
+            confirmBtnText: "Okay",
+            onConfirmBtnTap: () => Navigator.pop(context));
+      });
+      isAnnoucePlayeSideOn = true;
+    }
+
     return Scaffold(
         appBar: AppBar(title: const Text("Chessy")),
         body: Container(
@@ -68,26 +177,47 @@ class _GameRoom extends State<GameRoom> {
           child: Center(
               child: Column(
             children: [
-              ChessBoard(
-                controller: controller,
-                onMove: () async {
-                  String currentFen = controller.getFen();
-                  String currentPlayer1 = widget.gameInfo['player1'];
-                  String currentPlayer2 = widget.gameInfo['player2'];
-                  String currentGameId = widget.gameInfo['gameId'];
-                  Map<String, String> headers = {
-                    HttpHeaders.contentTypeHeader: "application/json",
-                    HttpHeaders.authorizationHeader:
-                        globals.currentUser.refreshToken as String
-                  };
-                  String json_post =
-                      '{"player1":"$currentPlayer1","player2":"$currentPlayer2","fen":"$currentFen","gameID":"$currentGameId","message": "MOVE"}';
-                  Response response = await post(
-                      Uri.https(globals.API, globals.GAMEPLAY_API),
-                      headers: headers,
-                      body: json_post);
-                },
+              IgnorePointer(
+                ignoring: widget.isMoveAble,
+                child: ChessBoard(
+                  boardOrientation: widget.playerPosition == "W"
+                      ? PlayerColor.white
+                      : PlayerColor.black,
+                  controller: controller,
+                  onMove: () async {
+                    movesController.pause();
+                    String currentFen = controller.getFen();
+                    String currentPlayer1 = widget.gameInfo['player1'];
+                    String currentPlayer2 = widget.gameInfo['player2'];
+                    String currentGameId = widget.gameInfo['gameId'];
+                    Map<String, String> headers = {
+                      HttpHeaders.contentTypeHeader: "application/json",
+                      HttpHeaders.authorizationHeader:
+                          globals.currentUser.refreshToken as String
+                    };
+
+                    String currentSide_send = widget.playerPosition;
+
+                    String json_post =
+                        '{"player1":"$currentPlayer1","player2":"$currentPlayer2","fen":"$currentFen","gameID":"$currentGameId","message": "MOVE","currentSide":"$currentSide_send"}';
+                    Response response = await post(
+                        Uri.https(globals.API, globals.GAMEPLAY_API),
+                        headers: headers,
+                        body: json_post);
+                  },
+                ),
               ),
+              isOnFirstTimer
+                  ? Countdown(
+                      seconds: int.parse(widget.gameInfo['secsPerMoves']),
+                      build: (_, double time) => customText(time.toString()),
+                      interval: Duration(milliseconds: 100),
+                      controller: movesController,
+                      onFinished: () async {
+                        overtimeFinish(context);
+                      },
+                    )
+                  : customText("Please Wait for the first user go!"),
             ],
           )),
         ));

@@ -57,7 +57,7 @@ class RoomItem extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Status : $roomName',
+                          'RoomNam : $roomName',
                           style: const TextStyle(
                               fontFamily: 'Montserrat',
                               fontWeight: FontWeight.w700,
