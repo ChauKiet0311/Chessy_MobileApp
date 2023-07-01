@@ -4,26 +4,15 @@ import 'package:intl/intl.dart';
 final formatter = DateFormat.yMd();
 
 class RoomItemHistory extends StatelessWidget {
-  final String mode;
   final String roomName;
-  final String number;
   final String player;
-  final String result;
-  final DateTime date;
+  final String player2;
 
-  const RoomItemHistory({
-    super.key,
-    required this.mode,
-    required this.roomName,
-    required this.number,
-    required this.player,
-    required this.result,
-    required this.date,
-  });
-
-  String get formattedDate {
-    return formatter.format(date);
-  }
+  const RoomItemHistory(
+      {super.key,
+      required this.roomName,
+      required this.player,
+      required this.player2});
 
   @override
   Widget build(BuildContext context) {
@@ -45,16 +34,6 @@ class RoomItemHistory extends StatelessWidget {
                 Row(
                   children: [
                     const Spacer(),
-                    Text(
-                      formattedDate,
-                      style: const TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.w700,
-                        fontSize: 15,
-                        color: Color.fromARGB(255, 233, 226, 234),
-                      ),
-                      textAlign: TextAlign.end,
-                    ),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -84,7 +63,7 @@ class RoomItemHistory extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Room name: $roomName',
+                          '#$roomName',
                           style: const TextStyle(
                               fontFamily: 'Montserrat',
                               fontWeight: FontWeight.w700,
@@ -94,34 +73,14 @@ class RoomItemHistory extends StatelessWidget {
                         ),
                         const SizedBox(height: 7),
                         Text(
-                          '#$number',
+                          'Played against: $player2',
                           style: const TextStyle(
                               fontFamily: 'Montserrat',
                               fontWeight: FontWeight.w700,
                               fontSize: 15,
                               color: Color.fromARGB(255, 233, 226, 234)),
                           maxLines: 1,
-                        ),
-                        const SizedBox(height: 7),
-                        Text(
-                          'Mode: $number',
-                          style: const TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 15,
-                              color: Color.fromARGB(255, 233, 226, 234)),
-                          maxLines: 1,
-                        ),
-                        const SizedBox(height: 7),
-                        Text(
-                          'Result: $result',
-                          style: const TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 15,
-                              color: Color.fromARGB(255, 233, 226, 234)),
-                          maxLines: 1,
-                        ),
+                        )
                       ],
                     ),
                   ],
