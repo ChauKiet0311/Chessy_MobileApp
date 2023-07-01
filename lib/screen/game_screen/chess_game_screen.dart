@@ -40,6 +40,33 @@ class _GameRoom extends State<GameRoom> {
     HttpHeaders.authorizationHeader: globals.currentUser.refreshToken as String
   };
 
+  void checkIsAnySpecialMove() {
+    if (controller.isCheckMate()) {
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.info,
+          text: 'Checkmate !',
+          confirmBtnText: "Okay",
+          onConfirmBtnTap: () => Navigator.pop(context));
+    } else if (controller.isDraw()) {
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.info,
+          text: 'Drawwwww!',
+          confirmBtnText: "Okay",
+          onConfirmBtnTap: () => Navigator.pop(context));
+    } else if (controller.isGameOver()) {
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.info,
+          text: 'Game Over',
+          confirmBtnText: "Okay",
+          onConfirmBtnTap: () {
+            finishGame();
+          });
+    }
+  }
+
   //Xử lý các gói tin được gửi thông qua socket ở đây
   void onConnect(StompFrame frame) {
     stompClient.subscribe(
@@ -54,6 +81,8 @@ class _GameRoom extends State<GameRoom> {
             isOnFirstTimer = true;
             String fen = obj['fen'];
             controller.loadFen(fen);
+
+            checkIsAnySpecialMove();
 
             //Nhận về ở bên kia là hiện tại ở phía bên người mới gửi nhưng mà cả hai đều nhận được
             // Vì vậy phải set ngược lại ngay khi vừa mới gửi xong
@@ -78,7 +107,7 @@ class _GameRoom extends State<GameRoom> {
               stompClient.deactivate();
               Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => MainScreen()),
+                  MaterialPageRoute(builder: (context) => const MainScreen()),
                   (Route<dynamic> route) => false);
             }
             if (message == "SURRENDER") {
@@ -89,7 +118,7 @@ class _GameRoom extends State<GameRoom> {
                 stompClient.deactivate();
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => MainScreen()),
+                    MaterialPageRoute(builder: (context) => const MainScreen()),
                     (Route<dynamic> route) => false);
               } else {
                 stompClient.deactivate();

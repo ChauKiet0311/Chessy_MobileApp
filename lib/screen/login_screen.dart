@@ -126,10 +126,16 @@ class _LoginScreen extends State<LoginScreen> {
                       fontSize: 32,
                       color: Colors.white),
                 ),
-                InputTextField("Username", usernameTextController,
-                    obscureText: false),
-                InputTextField("Password", passwordTextController,
-                    obscureText: true),
+                InputTextField(
+                  "Username",
+                  usernameTextController,
+                  false,
+                ),
+                InputTextField(
+                  "Password",
+                  passwordTextController,
+                  true,
+                ),
                 const SizedBox(
                   height: 30,
                 ),

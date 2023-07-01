@@ -6,8 +6,9 @@ class InputTextField extends StatelessWidget {
   final TextEditingController textFieldControler;
   final bool obscureText;
 
-  const InputTextField(this.nameField, this.textFieldControler,
-      {super.key, this.obscureText = false});
+  const InputTextField(
+      this.nameField, this.textFieldControler, this.obscureText,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {

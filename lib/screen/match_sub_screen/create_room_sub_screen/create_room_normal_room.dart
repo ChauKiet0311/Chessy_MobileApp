@@ -130,9 +130,11 @@ class _CreateNormalRoomScreen extends State<CreateNormalRoomScreen> {
               ),
               const SizedBox(height: 10),
               CreateRoomButton(mode, () {}),
-              InputTextField("RoomName", roomNameTextController),
-              InputTextField("Seconds per move", secondsPerMoveTextController),
-              InputTextField("Time allow to stop", timeStopTextController),
+              InputTextField("RoomName", roomNameTextController, false),
+              InputTextField(
+                  "Seconds per move", secondsPerMoveTextController, false),
+              InputTextField(
+                  "Time allow to stop", timeStopTextController, false),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
