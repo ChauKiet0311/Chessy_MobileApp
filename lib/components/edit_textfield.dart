@@ -5,9 +5,13 @@ class EditTextField extends StatelessWidget {
   final TextEditingController textFieldControler;
   final String hint;
   final Icon icon;
+  final bool obscure;
 
   const EditTextField(this.nameField, this.textFieldControler,
-      {super.key, required this.hint, required this.icon});
+      {super.key,
+      required this.hint,
+      required this.icon,
+      this.obscure = false});
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +29,7 @@ class EditTextField extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
                 child: TextField(
+                  obscureText: obscure,
                   controller: textFieldControler,
                   decoration: InputDecoration(
                       isDense: true,

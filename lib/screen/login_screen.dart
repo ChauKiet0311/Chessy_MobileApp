@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:chessy/components/input_textfield.dart';
 import 'package:chessy/components/rounded_button.dart';
 import 'package:chessy/screen/main_screen.dart';
+import 'package:chessy/screen/otp_form_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:chessy/constant.dart' as globals;
@@ -39,18 +40,19 @@ class _LoginScreen extends State<LoginScreen> {
         headers: headers, body: post_json);
 
     int statusCode = response.statusCode;
-    if (statusCode == 200) {
+    if (statusCode != 200) {
+      map['message'] = "FAILED";
+    } else {
+      //Save refreshToken to globals app
       String json_response = response.body;
       map = jsonDecode(json_response);
       globals.currentUser.accessToken = (map['accessToken']);
       globals.currentUser.refreshToken = map['refreshToken'];
       globals.currentUser.username = username;
       map['message'] = "Success";
-      return map;
-    } else {
-      map['message'] = "FAILED";
-      return map;
     }
+
+    return map;
   }
 
   //Ở đây sẽ handle logic Login

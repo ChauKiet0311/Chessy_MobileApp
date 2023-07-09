@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_collection_literals
+// ignore_for_file: prefer_collection_literals, type_init_formals
 
 import "dart:convert";
 import "dart:io";
@@ -49,6 +49,8 @@ class _CreateNormalRoomScreen extends State<CreateNormalRoomScreen> {
     }
     return true;
   }
+
+  bool isIgnoreInput = false;
 
   Future<Map<String, dynamic>> createRoomBackend() async {
     Map<String, String> headers = {
@@ -107,6 +109,34 @@ class _CreateNormalRoomScreen extends State<CreateNormalRoomScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    String currentUsername = globals.currentUser.username as String;
+    roomNameTextController.text = currentUsername + "'s Room";
+
+    if (widget.mode == "Normal Match") {
+      isIgnoreInput = false;
+    } else {
+      isIgnoreInput = true;
+
+      switch (mode) {
+        case "Blitz Match":
+          {
+            secondsPerMoveTextController.text = "15";
+            timeStopTextController.text = "300";
+          }
+          break;
+        case "Blitz 10":
+          {
+            secondsPerMoveTextController.text = "15";
+            timeStopTextController.text = "600";
+          }
+          break;
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -130,11 +160,20 @@ class _CreateNormalRoomScreen extends State<CreateNormalRoomScreen> {
               ),
               const SizedBox(height: 10),
               CreateRoomButton(mode, () {}),
-              InputTextField("RoomName", roomNameTextController, false),
-              InputTextField(
-                  "Seconds per move", secondsPerMoveTextController, false),
-              InputTextField(
-                  "Time allow to stop", timeStopTextController, false),
+              IgnorePointer(
+                  ignoring: isIgnoreInput,
+                  child: InputTextField(
+                      "RoomName", roomNameTextController, false)),
+              IgnorePointer(
+                ignoring: isIgnoreInput,
+                child: InputTextField(
+                    "Seconds per move", secondsPerMoveTextController, false),
+              ),
+              IgnorePointer(
+                ignoring: isIgnoreInput,
+                child: InputTextField(
+                    "Time allow to stop", timeStopTextController, false),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

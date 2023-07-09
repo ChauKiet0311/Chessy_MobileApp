@@ -1,4 +1,4 @@
-// ignore_for_file: import_of_legacy_library_into_null_safe, no_logic_in_create_state
+// ignore_for_file: import_of_legacy_library_into_null_safe, no_logic_in_create_state, prefer_interpolation_to_compose_strings
 
 import 'dart:io';
 
@@ -191,7 +191,7 @@ class _WaitingScreen extends State<WaitingScreen> {
                     fontSize: 24,
                     color: Colors.white),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               customText("Room id #" + widget.gameInfo['gameId']),
               customText("Room name: " + widget.gameInfo['roomName']),
               customText("Seconds per move: $secondsPerMove"),
@@ -199,7 +199,7 @@ class _WaitingScreen extends State<WaitingScreen> {
               const SizedBox(
                 height: 10,
               ),
-              Padding(
+              const Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 0, 5),
                 child: Align(
                   alignment: Alignment.centerLeft,
@@ -222,8 +222,8 @@ class _WaitingScreen extends State<WaitingScreen> {
               const SizedBox(
                 height: 30,
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 20, 5),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(0, 0, 20, 5),
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: Text(

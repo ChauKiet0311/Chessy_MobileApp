@@ -1,10 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:chessy/screen/system_setting/system_setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:chessy/components/rounded_button_bold.dart';
 import 'package:chessy/components/logout_dialog.dart';
+import 'package:http/http.dart';
 import 'change_password_screen.dart';
 import 'edit_screen.dart';
 import 'history_screen.dart';
+import 'package:chessy/constant.dart' as globals;
 
 class SettingTabView extends StatefulWidget {
   @override
@@ -16,6 +21,44 @@ class SettingTabView extends StatefulWidget {
 class _SettingTabView extends State<SettingTabView> {
   void _handleLogout() {
     Navigator.of(context, rootNavigator: true).pop(context);
+  }
+
+  Map<String, dynamic> userFetchInfo = Map<String, dynamic>();
+
+  void loadUserInfo() async {
+    String currentUser = globals.currentUser.username as String;
+
+    String refreshToken = globals.currentUser.refreshToken as String;
+
+    Map<String, String> headers = {
+      HttpHeaders.contentTypeHeader: "application/json",
+      HttpHeaders.authorizationHeader: "Bearer " + refreshToken,
+      HttpHeaders.accessControlAllowOriginHeader: "*",
+      'Accept': '*/*'
+    };
+
+    Response response = await get(
+        Uri.https(globals.API, globals.GET_USER_API + currentUser),
+        headers: headers);
+
+    if (response.statusCode == 200) {
+      userFetchInfo = jsonDecode(response.body);
+      // print(userFetchInfo['name']);
+
+      if (userFetchInfo['avatarURL'] != null) {
+        globals.avatarURL = userFetchInfo['avatarURL'];
+        globals.userEmail = userFetchInfo['email'];
+        print(globals.avatarURL);
+        setState(() {});
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    loadUserInfo();
   }
 
   @override
@@ -36,7 +79,7 @@ class _SettingTabView extends State<SettingTabView> {
         CircleAvatar(
           radius: 70,
           backgroundImage: Image.network(
-            'https://i.imgur.com/wfH8Koa.png',
+            globals.avatarURL,
           ).image,
         ),
         SizedBox(height: 40),
@@ -48,9 +91,12 @@ class _SettingTabView extends State<SettingTabView> {
               child: RoundedButtonBold(
                 "History",
                 () {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (ctx) => HistoryScreen(),
-                  ),);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ctx) => HistoryScreen(),
+                    ),
+                  );
                 },
               ),
             ),
@@ -60,9 +106,12 @@ class _SettingTabView extends State<SettingTabView> {
               child: RoundedButtonBold(
                 "Edit Profile",
                 () {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (ctx) => EditScreen(),
-                  ),);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ctx) => EditScreen(),
+                    ),
+                  );
                 },
               ),
             ),
@@ -72,9 +121,12 @@ class _SettingTabView extends State<SettingTabView> {
               child: RoundedButtonBold(
                 "Change Password",
                 () {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (ctx) => ChangePasswordScreen(),
-                  ),);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ctx) => ChangePasswordScreen(),
+                    ),
+                  );
                 },
               ),
             ),
@@ -84,9 +136,12 @@ class _SettingTabView extends State<SettingTabView> {
               child: RoundedButtonBold(
                 "System Setting",
                 () {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (ctx) => SystemSettingScreen(),
-                  ),);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ctx) => SystemSettingScreen(),
+                    ),
+                  );
                 },
               ),
             ),

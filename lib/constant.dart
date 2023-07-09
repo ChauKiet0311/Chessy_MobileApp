@@ -20,6 +20,8 @@ const String LOGIN_API = VERSION + "/authenticate/login";
 
 const String REGISTER_API = VERSION + "/authenticate/register";
 
+const String IS_VERIFY_API = VERSION + "/authenticate/isVerify";
+
 //MUST HAVE ACCESS TOKEN
 const String REGENERATE_API = VERSION + "/authenticate/regenerate";
 
@@ -29,8 +31,8 @@ const String FORGET_API = VERSION + "/authenticate/forget";
 
 //USER API
 
-const String GET_USER_API = VERSION + "/user";
-const String PUT_USER_API = VERSION + "/user";
+const String GET_USER_API = VERSION + "/user/";
+const String PUT_USER_API = VERSION + "/user/";
 
 //GAME API
 
@@ -47,3 +49,6 @@ const String GET_HISTORY_USER = "/api/v1/game/history/";
 
 UserAccess currentUser =
     UserAccess(username: "NULL", accessToken: "NULL", refreshToken: "NULL");
+
+String avatarURL = "https://i.imgur.com/wfH8Koa.png";
+String userEmail = "";

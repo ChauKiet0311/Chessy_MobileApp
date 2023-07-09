@@ -35,6 +35,7 @@ class _HistoryScreen extends State<HistoryScreen> {
       list_history = jsonDecode(response.body);
     }
     setState(() {});
+    print(list_history.length);
   }
 
   @override
@@ -78,8 +79,8 @@ class _HistoryScreen extends State<HistoryScreen> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        CircularProgressIndicator(),
-                                        SizedBox(
+                                        const CircularProgressIndicator(),
+                                        const SizedBox(
                                           height: 20,
                                         )
                                       ],
@@ -105,18 +106,21 @@ class _HistoryScreen extends State<HistoryScreen> {
                                         //RoomItem(mode: 'mode', roomName: "roomName", number: "number", player: "player"),
                                         margin: const EdgeInsets.all(10),
                                       ),
-                                      itemCount: 3,
+                                      itemCount: list_history.length,
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 10),
                                     )),
-                          SizedBox(
-                            height: 50,
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            child: RoundedButtonBold(
-                              "Back",
-                              () {
-                                Navigator.of(context).pop();
-                              },
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: SizedBox(
+                              height: 50,
+                              width: MediaQuery.of(context).size.width * 0.3,
+                              child: RoundedButtonBold(
+                                "Back",
+                                () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
                             ),
                           ),
                           const SizedBox(

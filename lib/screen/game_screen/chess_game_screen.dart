@@ -32,6 +32,7 @@ class GameRoom extends StatefulWidget {
 class _GameRoom extends State<GameRoom> {
   ChessBoardController controller = ChessBoardController();
   CountdownController movesController = CountdownController(autoStart: true);
+  CountdownController timeAllController = CountdownController(autoStart: true);
 
   bool isAnnoucePlayeSideOn = false;
   bool isOnFirstTimer = false;
@@ -41,6 +42,21 @@ class _GameRoom extends State<GameRoom> {
   };
 
   void checkIsAnySpecialMove() {
+    if (controller.isGameOver()) {
+      QuickAlert.show(
+          context: context,
+          type: QuickAlertType.info,
+          text: 'Game Over',
+          confirmBtnText: "Okay",
+          onConfirmBtnTap: () {
+            finishGame();
+            stompClient.deactivate();
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const MainScreen()),
+                (Route<dynamic> route) => false);
+          });
+    }
     if (controller.isCheckMate()) {
       QuickAlert.show(
           context: context,
@@ -55,15 +71,6 @@ class _GameRoom extends State<GameRoom> {
           text: 'Drawwwww!',
           confirmBtnText: "Okay",
           onConfirmBtnTap: () => Navigator.pop(context));
-    } else if (controller.isGameOver()) {
-      QuickAlert.show(
-          context: context,
-          type: QuickAlertType.info,
-          text: 'Game Over',
-          confirmBtnText: "Okay",
-          onConfirmBtnTap: () {
-            finishGame();
-          });
     }
   }
 
@@ -154,6 +161,7 @@ class _GameRoom extends State<GameRoom> {
     if (widget.playerPosition == widget.currentGameSide) {
       movesController.restart();
       movesController.start();
+      timeAllController.resume();
       //Lượt của đối thủ
       return false;
     }
@@ -208,6 +216,7 @@ class _GameRoom extends State<GameRoom> {
     } else {
       widget.playerPosition = "B";
       movesController.pause();
+      timeAllController.pause();
       isOnFirstTimer = false;
     }
     widget.isMoveAble = isThisSideFreeze();
@@ -258,6 +267,7 @@ class _GameRoom extends State<GameRoom> {
                   controller: controller,
                   onMove: () async {
                     movesController.pause();
+                    timeAllController.pause();
                     String currentFen = controller.getFen();
                     String currentPlayer1 = widget.gameInfo['player1'];
                     String currentPlayer2 = widget.gameInfo['player2'];
@@ -294,6 +304,20 @@ class _GameRoom extends State<GameRoom> {
                             overtimeFinish(context);
                           },
                         ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        customText("Your time left"),
+                        Countdown(
+                          seconds: int.parse(widget.gameInfo['timeAllowStop']),
+                          build: (_, double time) =>
+                              customText(time.toString()),
+                          interval: Duration(milliseconds: 100),
+                          controller: timeAllController,
+                          onFinished: () async {
+                            overtimeFinish(context);
+                          },
+                        )
                       ],
                     )
                   : customText("Please Wait for the first user go!"),
@@ -326,6 +350,12 @@ class _GameRoom extends State<GameRoom> {
                             headers: headers,
                             body: post_json);
                         Navigator.pop(context);
+
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => MainScreen()),
+                            (Route<dynamic> route) => false);
                       });
                 }),
               )
