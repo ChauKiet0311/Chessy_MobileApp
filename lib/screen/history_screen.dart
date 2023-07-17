@@ -2,6 +2,7 @@ import "dart:convert";
 import "dart:io";
 
 import "package:chessy/components/room_item_history.dart";
+import "package:chessy/screen/game_screen/history_game_screen.dart";
 import "package:flutter/material.dart";
 import "package:http/http.dart";
 
@@ -88,6 +89,19 @@ class _HistoryScreen extends State<HistoryScreen> {
                                   : ListView.builder(
                                       itemBuilder: (ctx, index) => Container(
                                         child: RoomItemHistory(
+                                          press: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (ctx) =>
+                                                    HistoryGameScreen(
+                                                  gameHistory:
+                                                      list_history[index]
+                                                          ['history'],
+                                                ),
+                                              ),
+                                            );
+                                          },
                                           roomName: list_history[index]
                                               ['gameID'],
                                           player: list_history[index]

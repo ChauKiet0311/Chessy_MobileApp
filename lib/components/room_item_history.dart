@@ -8,12 +8,14 @@ class RoomItemHistory extends StatelessWidget {
   final String roomName;
   final String player;
   final String player2;
+  final VoidCallback press;
 
   const RoomItemHistory(
       {super.key,
       required this.roomName,
       required this.player,
-      required this.player2});
+      required this.player2,
+      required this.press});
 
   @override
   Widget build(BuildContext context) {
@@ -27,78 +29,79 @@ class RoomItemHistory extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         elevation: 5,
         child: InkWell(
+            onTap: press,
             child: Container(
-          padding: const EdgeInsets.all(10),
-          width: card_width,
-          height: card_height,
-          decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 105, 14, 91),
-              borderRadius: BorderRadius.all(Radius.circular(18))),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Column(
-              children: [
-                Row(
+              padding: const EdgeInsets.all(10),
+              width: card_width,
+              height: card_height,
+              decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 105, 14, 91),
+                  borderRadius: BorderRadius.all(Radius.circular(18))),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: Column(
                   children: [
-                    const Spacer(),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Column(mainAxisSize: MainAxisSize.min, children: [
-                      CircleAvatar(
-                        radius: card_height * 0.25,
-                        backgroundImage: Image.network(
-                          globals.avatarURL,
-                        ).image,
-                      ),
-                      Text(player,
-                          style: const TextStyle(
-                              fontFamily: 'Montserrat',
-                              fontWeight: FontWeight.w700,
-                              fontSize: 12,
-                              color: Color.fromARGB(255, 233, 226, 234)))
-                    ]),
-                    const SizedBox(
-                      width: 30,
+                    Row(
+                      children: [
+                        const Spacer(),
+                      ],
                     ),
-                    Flexible(
-                      child: Column(
-                        //mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '#$roomName',
-                            softWrap: true,
-                            style: const TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontWeight: FontWeight.w700,
-                                overflow: TextOverflow.ellipsis,
-                                fontSize: 10,
-                                color: Color.fromARGB(255, 233, 226, 234)),
-                            maxLines: 1,
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Column(mainAxisSize: MainAxisSize.min, children: [
+                          CircleAvatar(
+                            radius: card_height * 0.25,
+                            backgroundImage: Image.network(
+                              globals.avatarURL,
+                            ).image,
                           ),
-                          const SizedBox(height: 7),
-                          Text(
-                            'Played against: $player2',
-                            style: const TextStyle(
-                                fontFamily: 'Montserrat',
-                                fontWeight: FontWeight.w700,
-                                fontSize: 15,
-                                color: Color.fromARGB(255, 233, 226, 234)),
-                            maxLines: 1,
-                          )
-                        ],
-                      ),
+                          Text(player,
+                              style: const TextStyle(
+                                  fontFamily: 'Montserrat',
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 12,
+                                  color: Color.fromARGB(255, 233, 226, 234)))
+                        ]),
+                        const SizedBox(
+                          width: 30,
+                        ),
+                        Flexible(
+                          child: Column(
+                            //mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '#$roomName',
+                                softWrap: true,
+                                style: const TextStyle(
+                                    fontFamily: 'Montserrat',
+                                    fontWeight: FontWeight.w700,
+                                    overflow: TextOverflow.ellipsis,
+                                    fontSize: 10,
+                                    color: Color.fromARGB(255, 233, 226, 234)),
+                                maxLines: 1,
+                              ),
+                              const SizedBox(height: 7),
+                              Text(
+                                'Played against: $player2',
+                                style: const TextStyle(
+                                    fontFamily: 'Montserrat',
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 15,
+                                    color: Color.fromARGB(255, 233, 226, 234)),
+                                maxLines: 1,
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
-          ),
-        )));
+              ),
+            )));
   }
 }
